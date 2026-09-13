@@ -1,10 +1,10 @@
 # Windows x64：从源码到 EXE 安装包
 
-**[h.proxy for Windows — 下载安装包直接使用 / Download the installer, no build required](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
+**[h.proxy for Windows — 下载安装包直接使用，无需编译](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
 
-普通用户直接下载安装，无需以下依赖。End users can install the EXE directly without the development tools below.
+普通用户直接下载安装，无需以下开发依赖。
 
-[English build guide](Build_Windows.en.md) · [SHA256 校验文件](https://github.com/Smile96899/h.proxy/releases/latest/download/SHA256SUMS.txt)
+[中文](Build_Windows.md) | [English](Build_Windows.en.md) · [返回项目介绍](../README.md) · [SHA256 校验文件](https://github.com/Smile96899/h.proxy/releases/latest/download/SHA256SUMS.txt)
 
 本文用于 **h.proxy / h. v1.0**。请按顺序执行；不能仅编译 `h.exe` 就发布，网络核心、Qt 插件、OpenSSL 和规则数据库均需包含。
 

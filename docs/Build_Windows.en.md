@@ -3,9 +3,8 @@
 **[Download h.proxy for Windows and install directly — no build required](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
 
 End users do not need the dependencies below. Download and run the installer instead.
-普通用户直接下载安装包即可，不需要自行准备开发依赖或编译。
 
-[中文构建教程](Build_Windows.md) · [SHA256 checksums](https://github.com/Smile96899/h.proxy/releases/latest/download/SHA256SUMS.txt)
+[中文](Build_Windows.md) | [English](Build_Windows.en.md) · [Back to project overview](../README.en.md) · [SHA256 checksums](https://github.com/Smile96899/h.proxy/releases/latest/download/SHA256SUMS.txt)
 
 These instructions cover **Windows x64, h. v1.0**. Building only `h.exe` is not enough: the Go core, Qt plugins, OpenSSL and Geo databases must also be deployed.
 
@@ -187,4 +186,3 @@ Portable builds omit `installed.mode` and keep configuration in the adjacent `co
 - TUN mode may require administrator privileges.
 
 This guide describes the build procedure, not exhaustive validation of every Windows version, protocol or third-party dependency combination.
-
