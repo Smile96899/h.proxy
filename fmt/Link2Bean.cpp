@@ -26,7 +26,7 @@ namespace NekoGui_fmt {
         password = url.password();
         if (serverPort == -1) serverPort = socks_http_type == type_HTTP ? 443 : 1080;
 
-        // v2rayN fmt
+
         if (password.isEmpty() && !username.isEmpty()) {
             QString n = DecodeB64IfValid(username);
             if (!n.isEmpty()) {
@@ -53,7 +53,7 @@ namespace NekoGui_fmt {
         password = url.userName();
         if (serverPort == -1) serverPort = 443;
 
-        // security
+
 
         auto type = GetQueryValue(query, "type", "tcp");
         if (type == "h2") {
@@ -80,7 +80,7 @@ namespace NekoGui_fmt {
             stream->utlsFingerprint = NekoGui::dataStore->utlsFingerprint;
         }
 
-        // type
+
         if (stream->network == "ws") {
             stream->path = GetQueryValue(query, "path", "");
             stream->host = GetQueryValue(query, "host", "");
@@ -100,7 +100,7 @@ namespace NekoGui_fmt {
             }
         }
 
-        // protocol
+
         if (proxy_type == proxy_VLESS) {
             flow = GetQueryValue(query, "flow", "");
         }
@@ -110,7 +110,7 @@ namespace NekoGui_fmt {
 
     bool ShadowSocksBean::TryParseLink(const QString &link) {
         if (SubStrBefore(link, "#").contains("@")) {
-            // SS
+
             auto url = QUrl(link);
             if (!url.isValid()) return false;
 
@@ -119,13 +119,13 @@ namespace NekoGui_fmt {
             serverPort = url.port();
 
             if (url.password().isEmpty()) {
-                // traditional format
+
                 auto method_password = DecodeB64IfValid(url.userName(), QByteArray::Base64Option::Base64UrlEncoding);
                 if (method_password.isEmpty()) return false;
                 method = SubStrBefore(method_password, ":");
                 password = SubStrAfter(method_password, ":");
             } else {
-                // 2022 format
+
                 method = url.userName();
                 password = url.password();
             }
@@ -133,7 +133,7 @@ namespace NekoGui_fmt {
             auto query = GetQuery(url);
             plugin = query.queryItemValue("plugin").replace("simple-obfs;", "obfs-local;");
         } else {
-            // v2rayN
+
             DECODE_V2RAY_N_1
 
             if (hasRemarks) name = url.fragment(QUrl::FullyDecoded);
@@ -146,16 +146,16 @@ namespace NekoGui_fmt {
     }
 
     bool VMessBean::TryParseLink(const QString &link) {
-        // V2RayN Format
+
         auto linkN = DecodeB64IfValid(SubStrAfter(link, "vmess://"));
         if (!linkN.isEmpty()) {
             auto objN = QString2QJsonObject(linkN);
             if (objN.isEmpty()) return false;
-            // REQUIRED
+
             uuid = objN["id"].toString();
             serverAddress = objN["add"].toString();
             serverPort = objN["port"].toVariant().toInt();
-            // OPTIONAL
+
             name = objN["ps"].toString();
             aid = objN["aid"].toVariant().toInt();
             stream->host = objN["host"].toString();
@@ -171,12 +171,12 @@ namespace NekoGui_fmt {
             }
             auto scy = objN["scy"].toString();
             if (!scy.isEmpty()) security = scy;
-            // TLS (XTLS?)
+
             stream->security = objN["tls"].toString();
-            // TODO quic & kcp
+
             return true;
         } else {
-            // https://github.com/XTLS/Xray-core/discussions/716
+
             auto url = QUrl(link);
             if (!url.isValid()) return false;
             auto query = GetQuery(url);
@@ -187,10 +187,10 @@ namespace NekoGui_fmt {
             uuid = url.userName();
             if (serverPort == -1) serverPort = 443;
 
-            aid = 0; // “此分享标准仅针对 VMess AEAD 和 VLESS。”
+            aid = 0;
             security = GetQueryValue(query, "encryption", "auto");
 
-            // security
+
             auto type = GetQueryValue(query, "type", "tcp");
             if (type == "h2") {
                 type = "http";
@@ -210,7 +210,7 @@ namespace NekoGui_fmt {
                 stream->utlsFingerprint = NekoGui::dataStore->utlsFingerprint;
             }
 
-            // type
+
             if (stream->network == "ws") {
                 stream->path = GetQueryValue(query, "path", "");
                 stream->host = GetQueryValue(query, "host", "");
@@ -257,8 +257,8 @@ namespace NekoGui_fmt {
         if (url.host().isEmpty() || url.port() == -1) return false;
 
         if (url.scheme() == "tuic") {
-            // by daeuniverse
-            // https://github.com/daeuniverse/dae/discussions/182
+
+
 
             name = url.fragment(QUrl::FullyDecoded);
             serverAddress = url.host();
@@ -294,4 +294,4 @@ namespace NekoGui_fmt {
         return true;
     }
 
-} // namespace NekoGui_fmt
+}

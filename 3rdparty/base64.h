@@ -44,4 +44,4 @@ namespace Qt515Base64 {
     };
 
     FromBase64Result QByteArray_fromBase64Encoding(const QByteArray &base64, Base64Options options);
-} // namespace Qt515Base64
+}

@@ -6,10 +6,10 @@ DEST=$DEPLOYMENT/windows64
 rm -rf $DEST
 mkdir -p $DEST
 
-#### copy exe ####
+
 cp $BUILD/nekobox.exe $DEST
 
-#### deploy qt & DLL runtime ####
+
 pushd $DEST
 windeployqt nekobox.exe --no-compiler-runtime --no-system-d3d-compiler --no-opengl-sw --verbose 2
 rm -rf translations
@@ -22,5 +22,5 @@ fi
 
 popd
 
-#### prepare deployment ####
+
 cp $BUILD/*.pdb $DEPLOYMENT

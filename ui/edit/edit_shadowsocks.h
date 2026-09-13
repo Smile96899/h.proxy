@@ -25,4 +25,4 @@ private:
     std::shared_ptr<NekoGui::ProxyEntity> ent;
 };
 
-#endif // EDIT_SHADOWSOCKS_H
+#endif

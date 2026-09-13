@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	// update & launcher
+
 	exe, err := os.Executable()
 	if err != nil {
 		panic(err.Error())
@@ -26,20 +26,20 @@ func main() {
 	if strings.HasPrefix(strings.ToLower(exe), "updater") {
 		if runtime.GOOS == "windows" {
 			if strings.HasPrefix(strings.ToLower(exe), "updater.old") {
-				// 2. "updater.old" update files
+
 				time.Sleep(time.Second)
 				Updater()
-				// 3. start
+
 				exec.Command("./nekobox.exe").Start()
 			} else {
-				// 1. main prog quit and run "updater.exe"
+
 				Copy("./updater.exe", "./updater.old")
 				exec.Command("./updater.old", os.Args[1:]...).Start()
 			}
 		} else {
-			// 1. update files
+
 			Updater()
-			// 2. start
+
 			if os.Getenv("NKR_FROM_LAUNCHER") == "1" {
 				Launcher()
 			} else {
@@ -55,8 +55,8 @@ func main() {
 }
 
 func Copy(src string, dst string) {
-	// Read all content of src to data
+
 	data, _ := ioutil.ReadFile(src)
-	// Write data to dst
+
 	ioutil.WriteFile(dst, data, 0644)
 }

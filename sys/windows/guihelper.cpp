@@ -15,7 +15,7 @@ void Windows_QWidget_SetForegroundWindow(QWidget *w) {
     ::AttachThreadInput(dwCurID, dwForeID, FALSE);
 }
 
-int isThisAdmin = -1; // cached
+int isThisAdmin = -1;
 
 bool Windows_IsInAdmin() {
     if (isThisAdmin >= 0) return isThisAdmin;

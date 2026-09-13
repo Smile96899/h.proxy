@@ -1,17 +1,17 @@
 #pragma once
 
-// Dialogs
+
 
 #define Dialog_DialogBasicSettings "DialogBasicSettings"
 #define Dialog_DialogEditProfile "DialogEditProfile"
 #define Dialog_DialogManageGroups "DialogManageGroups"
 #define Dialog_DialogManageRoutes "DialogManageRoutes"
 
-// Utils
+
 
 #define QRegExpValidator_Number new QRegularExpressionValidator(QRegularExpression("^[0-9]+$"), this)
 
-// NekoRay Save&Load
+
 
 #define P_C_LOAD_STRING(a) CACHE.a = bean->a;
 #define P_C_SAVE_STRING(a) bean->a = CACHE.a;
@@ -76,7 +76,7 @@
     if (result.isEmpty()) CACHE.a = "";                               \
     editor->deleteLater();
 
-//
+
 
 #define ADD_ASTERISK(parent)                                         \
     for (auto label: parent->findChildren<QLabel *>()) {             \

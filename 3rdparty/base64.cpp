@@ -12,7 +12,7 @@ namespace Qt515Base64 {
         };
 
         fromBase64_helper_result fromBase64_helper(const char *input, qsizetype inputSize,
-                                                   char *output /* may alias input */,
+                                                   char *output                      ,
                                                    Base64Options options) {
             fromBase64_helper_result result{0, Base64DecodingStatus::Ok};
 
@@ -41,14 +41,14 @@ namespace Qt515Base64 {
                 } else {
                     if (options & AbortOnBase64DecodingErrors) {
                         if (ch == '=') {
-                            // can have 1 or 2 '=' signs, in both cases padding base64Size to
-                            // a multiple of 4. Any other case is illegal.
+
+
                             if ((inputSize % 4) != 0) {
                                 result.status = Base64DecodingStatus::IllegalInputLength;
                                 return result;
                             } else if ((i == inputSize - 1) ||
                                        (i == inputSize - 2 && input[++i] == '=')) {
-                                d = -1; // ... and exit the loop, normally
+                                d = -1;
                             } else {
                                 result.status = Base64DecodingStatus::IllegalPadding;
                                 return result;
@@ -77,7 +77,7 @@ namespace Qt515Base64 {
             result.decodedLength = offset;
             return result;
         }
-    } // namespace
+    }
 
     FromBase64Result QByteArray_fromBase64Encoding(const QByteArray &base64, Base64Options options) {
         const auto base64Size = base64.size();
@@ -89,4 +89,4 @@ namespace Qt515Base64 {
         result.truncate(int(base64result.decodedLength));
         return {std::move(result), base64result.status};
     }
-} // namespace Qt515Base64
+}

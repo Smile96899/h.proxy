@@ -32,14 +32,14 @@ private:
     Qv2ray::ui::widgets::AutoCompleteTextEdit *directDomainTxt;
     Qv2ray::ui::widgets::AutoCompleteTextEdit *proxyDomainTxt;
     Qv2ray::ui::widgets::AutoCompleteTextEdit *blockDomainTxt;
-    //
+
     Qv2ray::ui::widgets::AutoCompleteTextEdit *directIPTxt;
     Qv2ray::ui::widgets::AutoCompleteTextEdit *blockIPTxt;
     Qv2ray::ui::widgets::AutoCompleteTextEdit *proxyIPTxt;
-    //
+
     NekoGui::Routing routing_cn_lan = NekoGui::Routing(1);
     NekoGui::Routing routing_global = NekoGui::Routing(0);
-    //
+
     QString title_base;
     QString active_routing;
 

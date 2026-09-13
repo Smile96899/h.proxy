@@ -1,17 +1,17 @@
-/* Copyright 2016 Pete Warden. All Rights Reserved.
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- ==============================================================================*/
+
+
+
+
+
+
+
+
+
+
+
 
 #include "picoproto.hpp"
 
@@ -19,9 +19,9 @@ namespace picoproto {
 
     namespace {
 
-        // To keep the dependencies down, here's a local copy of the widespread bit_cast
-        // operator. This is necessary because in practice weird things can happen if
-        // you just try to use reinterpret_cast.
+
+
+
         template<class Dest, class Source>
         inline Dest bit_cast(const Source &source) {
             static_assert(sizeof(Dest) == sizeof(Source), "Sizes do not match");
@@ -30,8 +30,8 @@ namespace picoproto {
             return dest;
         }
 
-        // These are defined in:
-        // https://developers.google.com/protocol-buffers/docs/encoding
+
+
         enum WireType {
             WIRETYPE_VARINT = 0,
             WIRETYPE_64BIT = 1,
@@ -41,7 +41,7 @@ namespace picoproto {
             WIRETYPE_32BIT = 5,
         };
 
-        // Pull bytes from the stream, updating the state.
+
         bool ConsumeBytes(uint8_t **current, size_t how_many, size_t *remaining) {
             if (how_many > *remaining) {
                 PP_LOG(ERROR) << "ReadBytes overrun!";
@@ -52,7 +52,7 @@ namespace picoproto {
             return true;
         }
 
-        // Grabs a particular type from the byte stream.
+
         template<class T>
         T ReadFromBytes(uint8_t **current, size_t *remaining) {
             PP_CHECK(ConsumeBytes(current, sizeof(T), remaining));
@@ -79,7 +79,7 @@ namespace picoproto {
             *field_number = wire_type_and_field_number >> 3;
         }
 
-    } // namespace
+    }
 
     std::string FieldTypeDebugString(enum FieldType type) {
         switch (type) {
@@ -318,10 +318,10 @@ namespace picoproto {
                 return GetInt64(number);
                 break;
             default: {
-                // Should never get here.
+
             } break;
         }
-        // Should never get here.
+
         return 0;
     }
 
@@ -548,4 +548,4 @@ namespace picoproto {
         return result;
     }
 
-} // namespace picoproto
+}

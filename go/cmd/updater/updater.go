@@ -19,7 +19,7 @@ func Updater() {
 		os.RemoveAll("./nekoray_update")
 	}
 
-	// find update package
+
 	var updatePackagePath string
 	if len(os.Args) == 2 && Exist(os.Args[1]) {
 		updatePackagePath = os.Args[1]
@@ -32,7 +32,7 @@ func Updater() {
 	}
 	log.Println("updating from", updatePackagePath)
 
-	// extract update package
+
 	if strings.HasSuffix(updatePackagePath, ".zip") {
 		pre_cleanup()
 		f, err := os.Open(updatePackagePath)
@@ -57,11 +57,11 @@ func Updater() {
 		f.Close()
 	}
 
-	// remove old file
+
 	removeAll("./*.dll")
 	removeAll("./*.dmp")
 
-	// update move
+
 	err := Mv("./nekoray_update/nekoray", "./")
 	if err != nil {
 		MessageBoxPlain("NekoGui Updater", "Update failed. Please close the running instance and run the updater again.\n\n"+err.Error())
@@ -72,7 +72,7 @@ func Updater() {
 	os.RemoveAll("./nekoray.zip")
 	os.RemoveAll("./nekoray.tar.gz")
 
-	// nekoray -> nekobox
+
 	os.Remove("./nekoray.exe")
 	os.Remove("./nekoray.png")
 	os.Remove("./nekoray_core.exe")

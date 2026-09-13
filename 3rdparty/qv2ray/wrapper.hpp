@@ -1,6 +1,6 @@
 #pragma once
 
-// Qv2ray wrapper
+
 
 #include <QJsonDocument>
 #include <QDebug>
@@ -11,8 +11,8 @@ namespace Qv2ray {
     namespace base {
         template<typename... T>
         inline void log_internal(T... v) {}
-    } // namespace base
-} // namespace Qv2ray
+    }
+}
 
 #define JsonToString(a) QJsonObject2QString(a, false)
 #define JsonFromString(a) QString2QJsonObject(a)
@@ -26,7 +26,7 @@ inline QString VerifyJsonString(const QString &source) {
     if (error.error == QJsonParseError::NoError) {
         return "";
     } else {
-        // LOG("WARNING: Json parse returns: " + error.errorString());
+
         return error.errorString();
     }
 }

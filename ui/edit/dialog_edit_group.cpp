@@ -26,12 +26,12 @@ DialogEditGroup::DialogEditGroup(const std::shared_ptr<NekoGui::Group> &ent, QWi
     ui->manually_column_width->setChecked(ent->manually_column_width);
     ui->cat_share->setVisible(false);
 
-    if (ent->id >= 0) { // already a group
+    if (ent->id >= 0) {
         ui->type->setDisabled(true);
         if (!ent->Profiles().isEmpty()) {
             ui->cat_share->setVisible(true);
         }
-    } else { // new group
+    } else {
         ui->front_proxy->hide();
         ui->front_proxy_l->hide();
         ui->front_proxy_clear->hide();
@@ -71,7 +71,7 @@ DialogEditGroup::~DialogEditGroup() {
 }
 
 void DialogEditGroup::accept() {
-    if (ent->id >= 0) { // already a group
+    if (ent->id >= 0) {
         if (!ent->url.isEmpty() && ui->url->text().isEmpty()) {
             MessageBoxWarning(tr("Warning"), tr("Please input URL"));
             return;

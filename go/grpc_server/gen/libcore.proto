@@ -6,7 +6,7 @@ option go_package = "grpc_server/gen";
 service LibcoreService {
   rpc Exit(EmptyReq) returns (EmptyResp) {}
   rpc Update(UpdateReq) returns (UpdateResp) {}
-  //
+
   rpc Start(LoadConfigReq) returns (ErrorResp) {}
   rpc Stop(EmptyReq) returns (ErrorResp) {}
   rpc Test(TestReq) returns (TestResp) {}
@@ -37,13 +37,13 @@ enum TestMode {
 message TestReq {
   TestMode mode = 1;
   int32 timeout = 6;
-  // TcpPing
+
   string address = 2;
-  // UrlTest
+
   LoadConfigReq config = 3;
   string inbound = 4;
   string url = 5;
-  // FullTest
+
   string in_address = 7;
   bool full_latency = 8;
   bool full_speed = 9;
@@ -51,7 +51,7 @@ message TestReq {
   int32 full_speed_timeout = 14;
   bool full_in_out = 10;
   bool full_udp_latency = 12;
-  //
+
   bool full_nat = 11 [deprecated = true];
 }
 

@@ -9,8 +9,8 @@ namespace NekoGui {
         QString error;
         QJsonObject coreConfig;
 
-        QList<std::shared_ptr<NekoGui_traffic::TrafficData>> outboundStats; // all, but not including "bypass" "block"
-        std::shared_ptr<NekoGui_traffic::TrafficData> outboundStat;         // main
+        QList<std::shared_ptr<NekoGui_traffic::TrafficData>> outboundStats;
+        std::shared_ptr<NekoGui_traffic::TrafficData> outboundStat;
         QStringList ignoreConnTag;
 
         std::list<std::shared_ptr<NekoGui_fmt::ExternalBuildResult>> extRs;
@@ -23,10 +23,10 @@ namespace NekoGui {
         bool forTest;
         bool forExport;
 
-        // priv
+
         QList<int> globalProfiles;
 
-        // xxList is V2Ray format string list
+
 
         QStringList domainListDNSRemote;
         QStringList domainListDNSDirect;
@@ -37,7 +37,7 @@ namespace NekoGui {
         QStringList domainListBlock;
         QStringList ipListBlock;
 
-        // config format
+
 
         QJsonArray routingRules;
         QJsonArray inbounds;
@@ -56,4 +56,4 @@ namespace NekoGui {
     QString WriteVPNSingBoxConfig();
 
     QString WriteVPNLinuxScript(const QString &configPath);
-} // namespace NekoGui
+}

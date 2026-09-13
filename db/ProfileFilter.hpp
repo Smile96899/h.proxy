@@ -8,8 +8,8 @@ namespace NekoGui {
         static void Uniq(
             const QList<std::shared_ptr<ProxyEntity>> &in,
             QList<std::shared_ptr<ProxyEntity>> &out,
-            bool by_address = false, // def by bean
-            bool keep_last = false   // def keep first
+            bool by_address = false,
+            bool keep_last = false
         );
 
         static void Common(
@@ -17,14 +17,14 @@ namespace NekoGui {
             const QList<std::shared_ptr<ProxyEntity>> &dst,
             QList<std::shared_ptr<ProxyEntity>> &outSrc,
             QList<std::shared_ptr<ProxyEntity>> &outDst,
-            bool by_address = false // def by bean
+            bool by_address = false
         );
 
         static void OnlyInSrc(
             const QList<std::shared_ptr<ProxyEntity>> &src,
             const QList<std::shared_ptr<ProxyEntity>> &dst,
             QList<std::shared_ptr<ProxyEntity>> &out,
-            bool by_address = false // def by bean
+            bool by_address = false
         );
 
         static void OnlyInSrc_ByPointer(
@@ -32,4 +32,4 @@ namespace NekoGui {
             const QList<std::shared_ptr<ProxyEntity>> &dst,
             QList<std::shared_ptr<ProxyEntity>> &out);
     };
-} // namespace NekoGui
+}

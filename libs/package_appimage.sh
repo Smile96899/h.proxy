@@ -4,7 +4,7 @@ sudo apt-get install fuse -y
 
 cp -r linux64 nekobox.AppDir
 
-# The file for Appimage
+
 
 rm nekobox.AppDir/launcher
 
@@ -26,13 +26,13 @@ EOF
 
 chmod +x nekobox.AppDir/AppRun
 
-# build
+
 
 curl -fLSO https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage
 chmod +x appimagetool-x86_64.AppImage
 ./appimagetool-x86_64.AppImage nekobox.AppDir
 
-# clean
+
 
 rm appimagetool-x86_64.AppImage
 rm -rf nekobox.AppDir

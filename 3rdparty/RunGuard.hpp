@@ -41,13 +41,13 @@ namespace {
         return data;
     }
 
-} // namespace
+}
 
 RunGuard::RunGuard(const QString &key)
     : key(key), memLockKey(generateKeyHash(key, "_memLockKey")), sharedmemKey(generateKeyHash(key, "_sharedmemKey")), sharedMem(sharedmemKey), memLock(memLockKey, 1) {
     memLock.acquire();
     {
-        QSharedMemory fix(sharedmemKey); // Fix for *nix: http://habrahabr.ru/post/173281/
+        QSharedMemory fix(sharedmemKey);
         fix.attach();
     }
     memLock.release();
@@ -95,4 +95,4 @@ void RunGuard::release() {
     memLock.release();
 }
 
-#endif // RUNGUARD_H
+#endif

@@ -16,7 +16,7 @@ public:
     std::function<QString()> get_edit_text_serverAddress;
     std::function<QString()> get_edit_text_serverPort;
 
-    // cached editor
+
 
     std::function<void()> editor_cache_updated;
 

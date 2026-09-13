@@ -29,4 +29,4 @@ namespace NekoGui_traffic {
     };
 
     extern TrafficLooper *trafficLooper;
-} // namespace NekoGui_traffic
+}

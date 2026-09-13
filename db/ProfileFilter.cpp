@@ -72,4 +72,4 @@ namespace NekoGui {
         }
     }
 
-} // namespace NekoGui
+}

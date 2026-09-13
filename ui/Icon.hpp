@@ -15,4 +15,4 @@ namespace Icon {
 
     QPixmap GetMaterialIcon(const QString &name);
 
-} // namespace Icon
+}

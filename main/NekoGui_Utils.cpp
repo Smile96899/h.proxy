@@ -93,14 +93,14 @@ quint64 GetRandomUint64() {
     return dist(mt);
 }
 
-// QString >> QJson
+
 QJsonObject QString2QJsonObject(const QString &jsonString) {
     QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
     QJsonObject jsonObject = jsonDocument.object();
     return jsonObject;
 }
 
-// QJson >> QString
+
 QString QJsonObject2QString(const QJsonObject &jsonObject, bool compact) {
     return QJsonDocument(jsonObject).toJson(compact ? QJsonDocument::Compact : QJsonDocument::Indented);
 }
@@ -228,7 +228,7 @@ void ActivateWindow(QWidget *w) {
 }
 
 void runOnUiThread(const std::function<void()> &callback, QObject *parent) {
-    // any thread
+
     auto *timer = new QTimer();
     auto thread = dynamic_cast<QThread *>(parent);
     if (thread == nullptr) {
@@ -238,7 +238,7 @@ void runOnUiThread(const std::function<void()> &callback, QObject *parent) {
     }
     timer->setSingleShot(true);
     QObject::connect(timer, &QTimer::timeout, [=]() {
-        // main thread
+
         callback();
         timer->deleteLater();
     });

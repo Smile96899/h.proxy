@@ -4,8 +4,8 @@
 
 JsonEditor::JsonEditor(const QJsonObject& rootObject, QWidget* parent) : QDialog(parent) {
     setupUi(this);
-    //    QvMessageBusConnect(JsonEditor);
-    //
+
+
     original = rootObject;
     final = rootObject;
     QString jsonString = JsonToString(rootObject);
@@ -23,17 +23,17 @@ JsonEditor::JsonEditor(const QJsonObject& rootObject, QWidget* parent) : QDialog
     jsonTree->resizeColumnToContents(0);
 }
 
-// QvMessageBusSlotImpl(JsonEditor)
-//         {
-//                 switch (msg)
-//                 {
-//                     MBShowDefaultImpl;
-//                     MBHideDefaultImpl;
-//                     MBRetranslateDefaultImpl;
-//                     case UPDATE_COLORSCHEME:
-//                         break;
-//                 }
-//         }
+
+
+
+
+
+
+
+
+
+
+
 
 QJsonObject JsonEditor::OpenEditor() {
     int resultCode = this->exec();

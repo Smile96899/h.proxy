@@ -5,14 +5,14 @@
 namespace NekoGui_fmt {
     class QUICBean : public AbstractBean {
     public:
-        // static constexpr int proxy_Hysteria = 0;
+
         static constexpr int proxy_TUIC = 1;
         static constexpr int proxy_Hysteria2 = 3;
         int proxy_type = proxy_Hysteria2;
 
         bool forceExternal = false;
 
-        // Hysteria 2
+
 
         QString obfsPassword = "";
 
@@ -26,7 +26,7 @@ namespace NekoGui_fmt {
         int hopInterval = 10;
         QString hopPort = "";
 
-        // TUIC
+
 
         QString uuid = "";
         QString congestionControl = "bbr";
@@ -35,11 +35,11 @@ namespace NekoGui_fmt {
         QString heartbeat = "10s";
         bool uos = false;
 
-        // HY2&TUIC
+
 
         QString password = "";
 
-        // TLS
+
 
         bool allowInsecure = false;
         QString sni = "";
@@ -69,7 +69,7 @@ namespace NekoGui_fmt {
                 _add(new configItem("uos", &uos, itemType::boolean));
             }
             _add(new configItem("forceExternal", &forceExternal, itemType::boolean));
-            // TLS
+
             _add(new configItem("allowInsecure", &allowInsecure, itemType::boolean));
             _add(new configItem("sni", &sni, itemType::string));
             _add(new configItem("alpn", &alpn, itemType::string));
@@ -110,4 +110,4 @@ namespace NekoGui_fmt {
 
         QString ToShareLink() override;
     };
-} // namespace NekoGui_fmt
+}

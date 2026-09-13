@@ -12,7 +12,7 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 pre_start_linux() {
-  # for Tun2Socket
+
   iptables -I INPUT -s 172.19.0.2 -d 172.19.0.1 -p tcp -j ACCEPT
   ip6tables -I INPUT -s fdfe:dcba:9876::2 -d fdfe:dcba:9876::1 -p tcp -j ACCEPT
 }

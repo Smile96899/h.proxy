@@ -1,7 +1,7 @@
-/*
- * Copyright 2020 Axel Waggershauser
- */
-// SPDX-License-Identifier: Apache-2.0
+
+
+
+
 
 #pragma once
 
@@ -26,35 +26,35 @@
 #include <QElapsedTimer>
 #endif
 
-// This is some sample code to start a discussion about how a minimal and header-only Qt wrapper/helper could look like.
+
 
 namespace ZXingQt {
 
 Q_NAMESPACE
 
-//TODO: find a better way to export these enums to QML than to duplicate their definition
-// #ifdef Q_MOC_RUN produces meta information in the moc output but it does end up working in qml
+
+
 #ifdef QT_QML_LIB
 enum class BarcodeFormat
 {
-	None            = 0,         ///< Used as a return value if no valid barcode has been detected
-	Aztec           = (1 << 0),  ///< Aztec
-	Codabar         = (1 << 1),  ///< Codabar
-	Code39          = (1 << 2),  ///< Code39
-	Code93          = (1 << 3),  ///< Code93
-	Code128         = (1 << 4),  ///< Code128
-	DataBar         = (1 << 5),  ///< GS1 DataBar, formerly known as RSS 14
-	DataBarExpanded = (1 << 6),  ///< GS1 DataBar Expanded, formerly known as RSS EXPANDED
-	DataMatrix      = (1 << 7),  ///< DataMatrix
-	EAN8            = (1 << 8),  ///< EAN-8
-	EAN13           = (1 << 9),  ///< EAN-13
-	ITF             = (1 << 10), ///< ITF (Interleaved Two of Five)
-	MaxiCode        = (1 << 11), ///< MaxiCode
-	PDF417          = (1 << 12), ///< PDF417 or
-	QRCode          = (1 << 13), ///< QR Code
-	UPCA            = (1 << 14), ///< UPC-A
-	UPCE            = (1 << 15), ///< UPC-E
-	MicroQRCode     = (1 << 16), ///< Micro QR Code
+	None            = 0,
+	Aztec           = (1 << 0),
+	Codabar         = (1 << 1),
+	Code39          = (1 << 2),
+	Code93          = (1 << 3),
+	Code128         = (1 << 4),
+	DataBar         = (1 << 5),
+	DataBarExpanded = (1 << 6),
+	DataMatrix      = (1 << 7),
+	EAN8            = (1 << 8),
+	EAN13           = (1 << 9),
+	ITF             = (1 << 10),
+	MaxiCode        = (1 << 11),
+	PDF417          = (1 << 12),
+	QRCode          = (1 << 13),
+	UPCA            = (1 << 14),
+	UPCE            = (1 << 15),
+	MicroQRCode     = (1 << 16),
 
 	LinearCodes = Codabar | Code39 | Code93 | Code128 | EAN8 | EAN13 | ITF | DataBar | DataBarExpanded | UPCA | UPCE,
 	MatrixCodes = Aztec | DataMatrix | MaxiCode | PDF417 | QRCode | MicroQRCode,
@@ -112,7 +112,7 @@ class Result : private ZXing::Result
 	Position _position;
 
 public:
-	Result() = default; // required for qmetatype machinery
+	Result() = default;
 
 	explicit Result(ZXing::Result&& r) : ZXing::Result(std::move(r)) {
 		_text = QString::fromStdString(ZXing::Result::text());
@@ -131,7 +131,7 @@ public:
 	const QByteArray& bytes() const { return _bytes; }
 	const Position& position() const { return _position; }
 
-	// For debugging/development
+
 	int runTime = 0;
 	Q_PROPERTY(int runTime MEMBER runTime)
 };
@@ -265,7 +265,7 @@ inline QList<Result> ReadBarcodes(const QVideoFrame& frame, const DecodeHints& h
 	}
 
 	if (fmt != ImageFormat::None) {
-		auto img = frame; // shallow copy just get access to non-const map() function
+		auto img = frame;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 		if (!img.isValid() || !img.map(QAbstractVideoBuffer::ReadOnly)){
 #else
@@ -331,9 +331,9 @@ public:
 	BarcodeReader(QObject* parent = nullptr) : QObject(parent) {}
 #endif
 
-	// TODO: find out how to properly expose QFlags to QML
-	// simply using ZQ_PROPERTY(BarcodeFormats, formats, setFormats)
-	// results in the runtime error "can't assign int to formats"
+
+
+
 	Q_PROPERTY(int formats READ formats WRITE setFormats NOTIFY formatsChanged)
 	int formats() const noexcept
 	{
@@ -407,7 +407,7 @@ class VideoFilterRunnable : public QVideoFilterRunnable
 public:
 	explicit VideoFilterRunnable(BarcodeReader* filter) : _filter(filter) {}
 
-	QVideoFrame run(QVideoFrame* input, const QVideoSurfaceFormat& /*surfaceFormat*/, RunFlags /*flags*/) override
+	QVideoFrame run(QVideoFrame* input, const QVideoSurfaceFormat&                  , RunFlags          ) override
 	{
 		_filter->process(*input);
 		return *input;
@@ -420,9 +420,9 @@ inline QVideoFilterRunnable* BarcodeReader::createFilterRunnable()
 }
 #endif
 
-#endif // QT_MULTIMEDIA_LIB
+#endif
 
-} // namespace ZXingQt
+}
 
 
 Q_DECLARE_METATYPE(ZXingQt::Position)
@@ -439,8 +439,8 @@ inline void registerQmlAndMetaTypes()
 	qRegisterMetaType<ZXingQt::BarcodeFormat>("BarcodeFormat");
 	qRegisterMetaType<ZXingQt::ContentType>("ContentType");
 
-	// supposedly the Q_DECLARE_METATYPE should be used with the overload without a custom name
-	// but then the qml side complains about "unregistered type"
+
+
 	qRegisterMetaType<ZXingQt::Position>("Position");
 	qRegisterMetaType<ZXingQt::Result>("Result");
 
@@ -449,6 +449,6 @@ inline void registerQmlAndMetaTypes()
 	qmlRegisterType<ZXingQt::BarcodeReader>("ZXing", 1, 0, "BarcodeReader");
 }
 
-} // namespace ZXingQt
+}
 
-#endif // QT_QML_LIB
+#endif

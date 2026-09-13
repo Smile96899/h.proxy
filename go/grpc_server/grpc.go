@@ -29,7 +29,7 @@ type BaseServer struct {
 func (s *BaseServer) Exit(ctx context.Context, in *gen.EmptyReq) (out *gen.EmptyResp, _ error) {
 	out = &gen.EmptyResp{}
 
-	// Connection closed
+
 	os.Exit(0)
 	return
 }
@@ -61,10 +61,10 @@ func RunCore(setupCore func(), server gen.LibcoreServiceServer) {
 		}
 	}()
 
-	// Libcore
+
 	setupCore()
 
-	// GRPC
+
 	lis, err := net.Listen("tcp", "127.0.0.1:"+strconv.Itoa(*_port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

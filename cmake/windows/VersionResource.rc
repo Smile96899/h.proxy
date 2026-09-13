@@ -1,7 +1,7 @@
 #include "VersionInfo.h"
 
 #if defined(__MINGW64__) || defined(__MINGW32__)
-	// MinGW-w64, MinGW
+
 	#if defined(__has_include) && __has_include(<winres.h>)
 		#include <winres.h>
 	#else
@@ -9,7 +9,7 @@
 		#include <winresrc.h>
 	#endif
 #else
-	// MSVC, Windows SDK
+
 	#include <winres.h>
 #endif
 

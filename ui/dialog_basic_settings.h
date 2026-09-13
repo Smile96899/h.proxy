@@ -40,4 +40,4 @@ private slots:
     void on_core_settings_clicked();
 };
 
-#endif // DIALOG_BASIC_SETTINGS_H
+#endif

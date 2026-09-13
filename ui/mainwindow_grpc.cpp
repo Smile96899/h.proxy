@@ -15,10 +15,10 @@
 #include <QMessageBox>
 #include <QDialogButtonBox>
 
-// ext core
+
 
 std::list<std::shared_ptr<NekoGui_sys::ExternalProcess>> CreateExtCFromExtR(const std::list<std::shared_ptr<NekoGui_fmt::ExternalBuildResult>> &extRs, bool start) {
-    // plz run and start in same thread
+
     std::list<std::shared_ptr<NekoGui_sys::ExternalProcess>> l;
     for (const auto &extR: extRs) {
         std::shared_ptr<NekoGui_sys::ExternalProcess> extC(new NekoGui_sys::ExternalProcess());
@@ -27,13 +27,13 @@ std::list<std::shared_ptr<NekoGui_sys::ExternalProcess>> CreateExtCFromExtR(cons
         extC->arguments = extR->arguments;
         extC->env = extR->env;
         l.emplace_back(extC);
-        //
+
         if (start) extC->Start();
     }
     return l;
 }
 
-// grpc
+
 
 #ifndef NKR_NO_GRPC
 using namespace NekoGui_rpc;
@@ -41,19 +41,19 @@ using namespace NekoGui_rpc;
 
 void MainWindow::setup_grpc() {
 #ifndef NKR_NO_GRPC
-    // Setup Connection
+
     defaultClient = new Client(
         [=](const QString &errStr) {
             MW_show_log("[Error] gRPC: " + errStr);
         },
         "127.0.0.1:" + Int2String(NekoGui::dataStore->core_port), NekoGui::dataStore->core_token);
 
-    // Looper
+
     runOnNewThread([=] { NekoGui_traffic::trafficLooper->Loop(); });
 #endif
 }
 
-// 测速
+
 
 inline bool speedtesting = false;
 inline QList<QThread *> speedtesting_threads = {};
@@ -70,7 +70,7 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
     auto group = NekoGui::profileManager->CurrentGroup();
     if (group->archive) return;
 
-    // menu_stop_testing
+
     if (mode == 114514) {
         while (!speedtesting_threads.isEmpty()) {
             auto t = speedtesting_threads.takeFirst();
@@ -86,18 +86,18 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
         auto w = new QDialog(this);
         auto layout = new QVBoxLayout(w);
         w->setWindowTitle(tr("Test Options"));
-        //
+
         auto l1 = new QCheckBox(tr("Latency"));
         auto l2 = new QCheckBox(tr("UDP latency"));
         auto l3 = new QCheckBox(tr("Download speed"));
         auto l4 = new QCheckBox(tr("In and Out IP"));
-        //
+
         auto box = new QDialogButtonBox;
         box->setOrientation(Qt::Horizontal);
         box->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
         connect(box, &QDialogButtonBox::accepted, w, &QDialog::accept);
         connect(box, &QDialogButtonBox::rejected, w, &QDialog::reject);
-        //
+
         layout->addWidget(l1);
         layout->addWidget(l2);
         layout->addWidget(l3);
@@ -107,12 +107,12 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
             w->deleteLater();
             return;
         }
-        //
+
         if (l1->isChecked()) full_test_flags << "1";
         if (l2->isChecked()) full_test_flags << "2";
         if (l3->isChecked()) full_test_flags << "3";
         if (l4->isChecked()) full_test_flags << "4";
-        //
+
         w->deleteLater();
         if (full_test_flags.isEmpty()) return;
     }
@@ -123,38 +123,38 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
         QMutex lock_return;
         int threadN = NekoGui::dataStore->test_concurrent;
         int threadN_finished = 0;
-        auto profiles_test = profiles; // copy
+        auto profiles_test = profiles;
 
-        // Threads
+
         lock_return.lock();
         for (int i = 0; i < threadN; i++) {
             runOnNewThread([&] {
                 speedtesting_threads << QObject::thread();
 
                 forever {
-                    //
+
                     lock_write.lock();
                     if (profiles_test.isEmpty()) {
                         threadN_finished++;
                         if (threadN == threadN_finished) {
-                            // quit control thread
+
                             lock_return.unlock();
                         }
                         lock_write.unlock();
-                        // quit of this thread
+
                         speedtesting_threads.removeAll(QObject::thread());
                         return;
                     }
                     auto profile = profiles_test.takeFirst();
                     lock_write.unlock();
 
-                    //
+
                     libcore::TestReq req;
                     req.set_mode((libcore::TestMode) mode);
                     req.set_timeout(10 * 1000);
                     req.set_url(NekoGui::dataStore->test_latency_url.toStdString());
 
-                    //
+
                     std::list<std::shared_ptr<NekoGui_sys::ExternalProcess>> extCs;
                     QSemaphore extSem;
 
@@ -169,7 +169,7 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
                             });
                             continue;
                         }
-                        //
+
                         if (!c->extRs.empty()) {
                             runOnUiThread(
                                 [&] {
@@ -180,7 +180,7 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
                                 DS_cores);
                             extSem.acquire();
                         }
-                        //
+
                         auto config = new libcore::LoadConfigReq;
                         config->set_core_config(QJsonObject2QString(c->coreConfig, false).toStdString());
                         req.set_allocated_config(config);
@@ -199,7 +199,7 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
 
                     bool rpcOK;
                     auto result = defaultClient->Test(&rpcOK, req);
-                    //
+
                     if (!extCs.empty()) {
                         runOnUiThread(
                             [&] {
@@ -211,16 +211,16 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
                             DS_cores);
                         extSem.acquire();
                     }
-                    //
+
                     if (!rpcOK) return;
 
                     if (result.error().empty()) {
                         profile->latency = result.ms();
-                        if (profile->latency == 0) profile->latency = 1; // nekoray use 0 to represents not tested
+                        if (profile->latency == 0) profile->latency = 1;
                     } else {
                         profile->latency = -1;
                     }
-                    profile->full_test_report = result.full_report().c_str(); // higher priority
+                    profile->full_test_report = result.full_report().c_str();
                     profile->Save();
 
                     if (!result.error().empty()) {
@@ -235,7 +235,7 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
             });
         }
 
-        // Control
+
         lock_return.lock();
         lock_return.unlock();
         speedtesting = false;
@@ -314,7 +314,7 @@ void MainWindow::neko_start(int _id) {
             req.add_stats_outbounds("proxy");
             req.add_stats_outbounds("bypass");
         }
-        //
+
         bool rpcOK;
         QString error = defaultClient->Start(&rpcOK, req);
         if (rpcOK && !error.isEmpty()) {
@@ -323,7 +323,7 @@ void MainWindow::neko_start(int _id) {
         } else if (!rpcOK) {
             return false;
         }
-        //
+
         NekoGui_traffic::trafficLooper->proxy = result->outboundStat.get();
         NekoGui_traffic::trafficLooper->items = result->outboundStats;
         NekoGui::dataStore->ignoreConnTag = result->ignoreConnTag;
@@ -359,7 +359,7 @@ void MainWindow::neko_start(int _id) {
     }
     mu_stopping.unlock();
 
-    // check core state
+
     if (!NekoGui::dataStore->core_running) {
         runOnUiThread(
             [=] {
@@ -369,34 +369,34 @@ void MainWindow::neko_start(int _id) {
             },
             DS_cores);
         mu_starting.unlock();
-        return; // let CoreProcess call neko_start when core is up
+        return;
     }
 
-    // timeout message
+
     auto restartMsgbox = new QMessageBox(QMessageBox::Question, software_name, tr("If there is no response for a long time, it is recommended to restart the software."),
                                          QMessageBox::Yes | QMessageBox::No, this);
     connect(restartMsgbox, &QMessageBox::accepted, this, [=] { MW_dialog_message("", "RestartProgram"); });
     auto restartMsgboxTimer = new MessageBoxTimer(this, restartMsgbox, 5000);
 
     runOnNewThread([=] {
-        // stop current running
+
         if (NekoGui::dataStore->started_id >= 0) {
             runOnUiThread([=] { neko_stop(false, true); });
             sem_stopped.acquire();
         }
-        // do start
+
         MW_show_log(">>>>>>>> " + tr("Starting profile %1").arg(ent->bean->DisplayTypeAndName()));
         if (!neko_start_stage2()) {
             MW_show_log("<<<<<<<< " + tr("Failed to start profile %1").arg(ent->bean->DisplayTypeAndName()));
         }
         mu_starting.unlock();
-        // cancel timeout
+
         runOnUiThread([=] {
             restartMsgboxTimer->cancel();
             restartMsgboxTimer->deleteLater();
             restartMsgbox->deleteLater();
 #ifdef Q_OS_LINUX
-            // Check systemd-resolved
+
             if (NekoGui::dataStore->spmode_vpn && NekoGui::dataStore->routing->direct_dns.startsWith("local") && ReadFileText("/etc/resolv.conf").contains("systemd-resolved")) {
                 MW_show_log("[Warning] The default Direct DNS may not works with systemd-resolved, you may consider change your DNS settings.");
             }
@@ -464,21 +464,21 @@ void MainWindow::neko_stop(bool crash, bool sem) {
         return;
     }
 
-    // timeout message
+
     auto restartMsgbox = new QMessageBox(QMessageBox::Question, software_name, tr("If there is no response for a long time, it is recommended to restart the software."),
                                          QMessageBox::Yes | QMessageBox::No, this);
     connect(restartMsgbox, &QMessageBox::accepted, this, [=] { MW_dialog_message("", "RestartProgram"); });
     auto restartMsgboxTimer = new MessageBoxTimer(this, restartMsgbox, 5000);
 
     runOnNewThread([=] {
-        // do stop
+
         MW_show_log(">>>>>>>> " + tr("Stopping profile %1").arg(running->bean->DisplayTypeAndName()));
         if (!neko_stop_stage2()) {
             MW_show_log("<<<<<<<< " + tr("Failed to stop, please restart the program."));
         }
         mu_stopping.unlock();
         if (sem) sem_stopped.release();
-        // cancel timeout
+
         runOnUiThread([=] {
             restartMsgboxTimer->cancel();
             restartMsgboxTimer->deleteLater();
@@ -488,7 +488,7 @@ void MainWindow::neko_stop(bool crash, bool sem) {
 }
 
 void MainWindow::CheckUpdate() {
-    // on new thread...
+
 #ifndef NKR_NO_GRPC
     bool ok;
     libcore::UpdateReq request;
@@ -517,7 +517,7 @@ void MainWindow::CheckUpdate() {
         auto note_pre_release = response.is_pre_release() ? " (Pre-release)" : "";
         QMessageBox box(QMessageBox::Question, QObject::tr("Update") + note_pre_release,
                         QObject::tr("Update found: %1\nRelease note:\n%2").arg(response.assets_name().c_str(), response.release_note().c_str()));
-        //
+
         QAbstractButton *btn1 = nullptr;
         if (allow_updater) {
             btn1 = box.addButton(QObject::tr("Update"), QMessageBox::AcceptRole);
@@ -525,9 +525,9 @@ void MainWindow::CheckUpdate() {
         QAbstractButton *btn2 = box.addButton(QObject::tr("Open in browser"), QMessageBox::AcceptRole);
         box.addButton(QObject::tr("Close"), QMessageBox::RejectRole);
         box.exec();
-        //
+
         if (btn1 == box.clickedButton() && allow_updater) {
-            // Download Update
+
             runOnNewThread([=] {
                 bool ok2;
                 libcore::UpdateReq request2;

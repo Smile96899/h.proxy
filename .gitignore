@@ -1,5 +1,5 @@
-# This file is used to ignore files which are generated
-# ----------------------------------------------------------------------------
+
+
 
 *~
 *.autosave
@@ -33,16 +33,16 @@ Thumbs.db
 /.qmake.cache
 /.qmake.stash
 
-# qtcreator generated files
+
 *.pro.user*
 
-# xemacs temporary files
+
 *.flc
 
-# Vim temporary files
+
 .*.swp
 
-# Visual Studio generated files
+
 *.ib_pdb_index
 *.idb
 *.ilk
@@ -57,19 +57,19 @@ Thumbs.db
 *.vcxproj
 *vcxproj.*
 
-# MinGW generated files
+
 *.Debug
 *.Release
 
-# Python byte code
+
 *.pyc
 
-# Binaries
-# --------
+
+
 *.dll
 *.exe
 
-# Custom
+
 /nekoray
 /build
 CMakeLists.txt.user*
@@ -78,7 +78,7 @@ CMakeLists.txt.user*
 .vscode
 .idea
 
-# Deploy
+
 /deployment
 /neko*.sh
 /qtsdk
@@ -86,7 +86,7 @@ CMakeLists.txt.user*
 .vs
 out
 
-# Local build outputs, runtime state and credentials
+
 *.log
 /libs/deps/
 /config/

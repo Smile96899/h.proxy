@@ -22,32 +22,32 @@ namespace NekoGui_sub {
         if (ent == nullptr) return;
         auto stream = NekoGui_fmt::GetStreamSettings(ent->bean.get());
         if (stream == nullptr) return;
-        // 1. "security"
+
         if (stream->security == "none" || stream->security == "0" || stream->security == "false") {
             stream->security = "";
         } else if (stream->security == "1" || stream->security == "true") {
             stream->security = "tls";
         }
-        // 2. TLS SNI: v2rayN config builder generate sni like this, so set sni here for their format.
+
         if (stream->security == "tls" && IsIpAddress(ent->bean->serverAddress) && (!stream->host.isEmpty()) && stream->sni.isEmpty()) {
             stream->sni = stream->host;
         }
     }
 
     void RawUpdater::update(const QString &str) {
-        // Base64 encoded subscription
+
         if (auto str2 = DecodeB64IfValid(str); !str2.isEmpty()) {
             update(str2);
             return;
         }
 
-        // Clash
+
         if (str.contains("proxies:")) {
             updateClash(str);
             return;
         }
 
-        // Multi line
+
         if (str.count("\n") > 0) {
             auto list = str.split("\n");
             for (const auto &str2: list) {
@@ -59,7 +59,7 @@ namespace NekoGui_sub {
         std::shared_ptr<NekoGui::ProxyEntity> ent;
         bool needFix = true;
 
-        // Nekoray format
+
         if (str.startsWith("nekoray://")) {
             needFix = false;
             auto link = QUrl(str);
@@ -71,7 +71,7 @@ namespace NekoGui_sub {
             ent->bean->FromJsonBytes(j);
         }
 
-        // SOCKS
+
         if (str.startsWith("socks5://") || str.startsWith("socks4://") ||
             str.startsWith("socks4a://") || str.startsWith("socks://")) {
             ent = NekoGui::ProfileManager::NewProxyEntity("socks");
@@ -79,42 +79,42 @@ namespace NekoGui_sub {
             if (!ok) return;
         }
 
-        // HTTP
+
         if (str.startsWith("http://") || str.startsWith("https://")) {
             ent = NekoGui::ProfileManager::NewProxyEntity("http");
             auto ok = ent->SocksHTTPBean()->TryParseLink(str);
             if (!ok) return;
         }
 
-        // ShadowSocks
+
         if (str.startsWith("ss://")) {
             ent = NekoGui::ProfileManager::NewProxyEntity("shadowsocks");
             auto ok = ent->ShadowSocksBean()->TryParseLink(str);
             if (!ok) return;
         }
 
-        // VMess
+
         if (str.startsWith("vmess://")) {
             ent = NekoGui::ProfileManager::NewProxyEntity("vmess");
             auto ok = ent->VMessBean()->TryParseLink(str);
             if (!ok) return;
         }
 
-        // VLESS
+
         if (str.startsWith("vless://")) {
             ent = NekoGui::ProfileManager::NewProxyEntity("vless");
             auto ok = ent->TrojanVLESSBean()->TryParseLink(str);
             if (!ok) return;
         }
 
-        // Trojan
+
         if (str.startsWith("trojan://")) {
             ent = NekoGui::ProfileManager::NewProxyEntity("trojan");
             auto ok = ent->TrojanVLESSBean()->TryParseLink(str);
             if (!ok) return;
         }
 
-        // Naive
+
         if (str.startsWith("naive+")) {
             needFix = false;
             ent = NekoGui::ProfileManager::NewProxyEntity("naive");
@@ -122,7 +122,7 @@ namespace NekoGui_sub {
             if (!ok) return;
         }
 
-        // Hysteria2
+
         if (str.startsWith("hysteria2://") || str.startsWith("hy2://")) {
             needFix = false;
             ent = NekoGui::ProfileManager::NewProxyEntity("hysteria2");
@@ -130,7 +130,7 @@ namespace NekoGui_sub {
             if (!ok) return;
         }
 
-        // TUIC
+
         if (str.startsWith("tuic://")) {
             needFix = false;
             ent = NekoGui::ProfileManager::NewProxyEntity("tuic");
@@ -140,10 +140,10 @@ namespace NekoGui_sub {
 
         if (ent == nullptr) return;
 
-        // Fix
+
         if (needFix) RawUpdater_FixEnt(ent);
 
-        // End
+
         NekoGui::profileManager->AddProfile(ent, gid_add_to);
         updated_order += ent;
     }
@@ -199,7 +199,7 @@ namespace NekoGui_sub {
         }
     }
 
-    // NodeChild returns the first defined children or Null Node
+
     YAML::Node NodeChild(const YAML::Node &n, const std::list<std::string> &keys) {
         for (const auto &key: keys) {
             auto child = n[key];
@@ -210,7 +210,7 @@ namespace NekoGui_sub {
 
 #endif
 
-    // https://github.com/Dreamacro/clash/wiki/configuration
+
     void RawUpdater::updateClash(const QString &str) {
 #ifndef NKR_NO_YAML
         try {
@@ -226,7 +226,7 @@ namespace NekoGui_sub {
                 if (ent->bean->version == -114514) continue;
                 bool needFix = false;
 
-                // common
+
                 ent->bean->name = Node2QString(proxy["name"]);
                 ent->bean->serverAddress = Node2QString(proxy["server"]);
                 ent->bean->serverPort = Node2Int(proxy["port"]);
@@ -238,7 +238,7 @@ namespace NekoGui_sub {
                     auto plugin_n = proxy["plugin"];
                     auto pluginOpts_n = proxy["plugin-opts"];
 
-                    // UDP over TCP
+
                     if (Node2Bool(proxy["udp-over-tcp"])) {
                         bean->uot = Node2Int(proxy["udp-over-tcp-version"]);
                         if (bean->uot == 0) bean->uot = 2;
@@ -260,14 +260,14 @@ namespace NekoGui_sub {
                             if (Node2Bool(pluginOpts_n["tls"])) ssPlugin << "tls";
                             if (!host.isEmpty()) ssPlugin << "host=" + host;
                             if (!path.isEmpty()) ssPlugin << "path=" + path;
-                            // clash only: skip-cert-verify
-                            // clash only: headers
-                            // clash: mux=?
+
+
+
                         }
                         bean->plugin = ssPlugin.join(";");
                     }
 
-                    // sing-mux
+
                     auto smux = NodeChild(proxy, {"smux"});
                     if (Node2Bool(smux["enabled"])) bean->stream->multiplex_status = 1;
                 } else if (type == "socks" || type == "http") {
@@ -282,11 +282,11 @@ namespace NekoGui_sub {
                     if (type == "vless") {
                         bean->flow = Node2QString(proxy["flow"]);
                         bean->password = Node2QString(proxy["uuid"]);
-                        // meta packet encoding
+
                         if (Node2Bool(proxy["packet-addr"])) {
                             bean->stream->packet_encoding = "packetaddr";
                         } else {
-                            // For VLESS, default to use xudp
+
                             bean->stream->packet_encoding = "xudp";
                         }
                     } else {
@@ -302,11 +302,11 @@ namespace NekoGui_sub {
                         bean->stream->utlsFingerprint = NekoGui::dataStore->utlsFingerprint;
                     }
 
-                    // sing-mux
+
                     auto smux = NodeChild(proxy, {"smux"});
                     if (Node2Bool(smux["enabled"])) bean->stream->multiplex_status = 1;
 
-                    // opts
+
                     auto ws = NodeChild(proxy, {"ws-opts", "ws-opt"});
                     if (ws.IsMap()) {
                         auto headers = ws["headers"];
@@ -347,15 +347,15 @@ namespace NekoGui_sub {
                         bean->stream->utlsFingerprint = NekoGui::dataStore->utlsFingerprint;
                     }
 
-                    // sing-mux
+
                     auto smux = NodeChild(proxy, {"smux"});
                     if (Node2Bool(smux["enabled"])) bean->stream->multiplex_status = 1;
 
-                    // meta packet encoding
+
                     if (Node2Bool(proxy["xudp"])) bean->stream->packet_encoding = "xudp";
                     if (Node2Bool(proxy["packet-addr"])) bean->stream->packet_encoding = "packetaddr";
 
-                    // opts
+
                     auto ws = NodeChild(proxy, {"ws-opts", "ws-opt"});
                     if (ws.IsMap()) {
                         auto headers = ws["headers"];
@@ -367,7 +367,7 @@ namespace NekoGui_sub {
                         bean->stream->path = Node2QString(ws["path"]);
                         bean->stream->ws_early_data_length = Node2Int(ws["max-early-data"]);
                         bean->stream->ws_early_data_name = Node2QString(ws["early-data-header-name"]);
-                        // for Xray
+
                         if (Node2QString(ws["early-data-header-name"]) == "Sec-WebSocket-Protocol") {
                             bean->stream->path += "?ed=" + Node2QString(ws["max-early-data"]);
                         }
@@ -461,7 +461,7 @@ namespace NekoGui_sub {
 #endif
     }
 
-    // 在新的 thread 运行
+
     void GroupUpdater::AsyncUpdate(const QString &str, int _sub_gid, const std::function<void()> &finish) {
         auto content = str.trimmed();
         bool asURL = false;
@@ -500,19 +500,19 @@ namespace NekoGui_sub {
     }
 
     void GroupUpdater::Update(const QString &_str, int _sub_gid, bool _not_sub_as_url) {
-        // 创建 rawUpdater
+
         NekoGui::dataStore->imported_count = 0;
         auto rawUpdater = std::make_unique<RawUpdater>();
         rawUpdater->gid_add_to = _sub_gid;
 
-        // 准备
+
         QString sub_user_info;
-        bool asURL = _sub_gid >= 0 || _not_sub_as_url; // 把 _str 当作 url 处理（下载内容）
+        bool asURL = _sub_gid >= 0 || _not_sub_as_url;
         auto content = _str.trimmed();
         auto group = NekoGui::profileManager->GetGroup(_sub_gid);
         if (group != nullptr && group->archive) return;
 
-        // 网络请求
+
         if (asURL) {
             auto groupName = group == nullptr ? content : group->name;
             MW_show_log(">>>>>>>> " + QObject::tr("Requesting subscription: %1").arg(groupName));
@@ -529,22 +529,22 @@ namespace NekoGui_sub {
             MW_show_log("<<<<<<<< " + QObject::tr("Subscription request fininshed: %1").arg(groupName));
         }
 
-        QList<std::shared_ptr<NekoGui::ProxyEntity>> in;          // 更新前
-        QList<std::shared_ptr<NekoGui::ProxyEntity>> out_all;     // 更新前 + 更新后
-        QList<std::shared_ptr<NekoGui::ProxyEntity>> out;         // 更新后
-        QList<std::shared_ptr<NekoGui::ProxyEntity>> only_in;     // 只在更新前有的
-        QList<std::shared_ptr<NekoGui::ProxyEntity>> only_out;    // 只在更新后有的
-        QList<std::shared_ptr<NekoGui::ProxyEntity>> update_del;  // 更新前后都有的，需要删除的新配置
-        QList<std::shared_ptr<NekoGui::ProxyEntity>> update_keep; // 更新前后都有的，被保留的旧配置
+        QList<std::shared_ptr<NekoGui::ProxyEntity>> in;
+        QList<std::shared_ptr<NekoGui::ProxyEntity>> out_all;
+        QList<std::shared_ptr<NekoGui::ProxyEntity>> out;
+        QList<std::shared_ptr<NekoGui::ProxyEntity>> only_in;
+        QList<std::shared_ptr<NekoGui::ProxyEntity>> only_out;
+        QList<std::shared_ptr<NekoGui::ProxyEntity>> update_del;
+        QList<std::shared_ptr<NekoGui::ProxyEntity>> update_keep;
 
-        // 订阅解析前
+
         if (group != nullptr) {
             in = group->Profiles();
             group->sub_last_update = QDateTime::currentMSecsSinceEpoch() / 1000;
             group->info = sub_user_info;
             group->order.clear();
             group->Save();
-            //
+
             if (NekoGui::dataStore->sub_clear) {
                 MW_show_log(QObject::tr("Clearing servers..."));
                 for (const auto &profile: in) {
@@ -553,7 +553,7 @@ namespace NekoGui_sub {
             }
         }
 
-        // 解析并添加 profile
+
         rawUpdater->update(content);
 
         if (group != nullptr) {
@@ -562,12 +562,12 @@ namespace NekoGui_sub {
             QString change_text;
 
             if (NekoGui::dataStore->sub_clear) {
-                // all is new profile
+
                 for (const auto &ent: out_all) {
                     change_text += "[+] " + ent->bean->DisplayTypeAndName() + "\n";
                 }
             } else {
-                // find and delete not updated profile by ProfileFilter
+
                 NekoGui::ProfileFilter::OnlyInSrc_ByPointer(out_all, in, out);
                 NekoGui::ProfileFilter::OnlyInSrc(in, out, only_in);
                 NekoGui::ProfileFilter::OnlyInSrc(out, in, only_out);
@@ -582,12 +582,12 @@ namespace NekoGui_sub {
                     notice_deleted += "[-] " + ent->bean->DisplayTypeAndName() + "\n";
                 }
 
-                // sort according to order in remote
+
                 group->order = {};
                 for (const auto &ent: rawUpdater->updated_order) {
                     auto deleted_index = update_del.indexOf(ent);
                     if (deleted_index > 0) {
-                        if (deleted_index >= update_keep.count()) continue; // should not happen
+                        if (deleted_index >= update_keep.count()) continue;
                         auto ent2 = update_keep[deleted_index];
                         group->order.append(ent2->id);
                     } else {
@@ -596,7 +596,7 @@ namespace NekoGui_sub {
                 }
                 group->Save();
 
-                // cleanup
+
                 for (const auto &ent: out_all) {
                     if (!group->order.contains(ent->id)) {
                         NekoGui::profileManager->DeleteProfile(ent->id);
@@ -618,7 +618,7 @@ namespace NekoGui_sub {
             MW_dialog_message("SubUpdater", "finish");
         }
     }
-} // namespace NekoGui_sub
+}
 
 bool UI_update_all_groups_Updating = false;
 
@@ -630,7 +630,7 @@ void serialUpdateSubscription(const QList<int> &groupsTabOrder, int _order, bool
         return;
     }
 
-    // calculate this group
+
     auto group = NekoGui::profileManager->GetGroup(groupsTabOrder[_order]);
     if (group == nullptr || should_skip_group(group)) {
         serialUpdateSubscription(groupsTabOrder, _order + 1, onlyAllowed);
@@ -647,7 +647,7 @@ void serialUpdateSubscription(const QList<int> &groupsTabOrder, int _order, bool
         nextOrder += 1;
     }
 
-    // Async update current group
+
     UI_update_all_groups_Updating = true;
     NekoGui_sub::groupUpdater->AsyncUpdate(group->url, group->id, [=] {
         serialUpdateSubscription(groupsTabOrder, nextOrder, onlyAllowed);

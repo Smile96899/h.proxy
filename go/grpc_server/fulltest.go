@@ -40,7 +40,7 @@ func DoFullTest(ctx context.Context, in *gen.TestReq, instance interface{}) (out
 	out = &gen.TestResp{}
 	httpClient := neko_common.CreateProxyHttpClient(instance)
 
-	// Latency
+
 	var latency string
 	if in.FullLatency {
 		t, _ := speedtest.UrlTest(httpClient, in.Url, in.Timeout, speedtest.UrlTestStandard_RTT)
@@ -52,7 +52,7 @@ func DoFullTest(ctx context.Context, in *gen.TestReq, instance interface{}) (out
 		}
 	}
 
-	// UDP Latency
+
 	var udpLatency string
 	if in.FullUdpLatency {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
@@ -89,7 +89,7 @@ func DoFullTest(ctx context.Context, in *gen.TestReq, instance interface{}) (out
 		cancel()
 	}
 
-	// 入口 IP
+
 	var in_ip string
 	if in.FullInOut {
 		_in_ip, err := net.ResolveIPAddr("ip", in.InAddress)
@@ -100,7 +100,7 @@ func DoFullTest(ctx context.Context, in *gen.TestReq, instance interface{}) (out
 		}
 	}
 
-	// 出口 IP
+
 	var out_ip string
 	if in.FullInOut {
 		resp, err := httpClient.Get("https://www.cloudflare.com/cdn-cgi/trace")
@@ -113,7 +113,7 @@ func DoFullTest(ctx context.Context, in *gen.TestReq, instance interface{}) (out
 		}
 	}
 
-	// 下载
+
 	var speed string
 	if in.FullSpeed {
 		if in.FullSpeedTimeout <= 0 {

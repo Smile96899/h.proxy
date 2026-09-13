@@ -1,4 +1,4 @@
-// DO NOT INCLUDE THIS
+
 
 #include <functional>
 #include <memory>
@@ -6,18 +6,18 @@
 #include <QString>
 #include <QDebug>
 
-//
+
 
 inline QString software_name = "h.";
-// 顶部“在线支持”按钮的跳转地址，只需修改这里。
+
 inline QString website_url = "https://t.me/hh_vpn_888";
 inline QString software_core_name = "sing-box";
 
-// Main Functions
+
 
 inline std::function<void()> MF_release_runguard;
 
-// MainWindow functions
+
 class QWidget;
 inline QWidget *mainwindow;
 inline std::function<void(QString)> MW_show_log;
@@ -25,18 +25,18 @@ inline std::function<void(QString, QString)> MW_show_log_ext;
 inline std::function<void(QString)> MW_show_log_ext_vt100;
 inline std::function<void(QString, QString)> MW_dialog_message;
 
-// Dispatchers
+
 
 class QThread;
 inline QThread *DS_cores;
 
-// Timers
+
 
 class QTimer;
 inline QTimer *TM_auto_update_subsctiption;
 inline std::function<void(int)> TM_auto_update_subsctiption_Reset_Minute;
 
-// String
+
 
 #define FIRST_OR_SECOND(a, b) a.isEmpty() ? b : a
 
@@ -60,11 +60,11 @@ QStringList SplitLines(const QString &_string);
 
 QStringList SplitLinesSkipSharp(const QString &_string, int maxLine = 0);
 
-// Base64
+
 
 QByteArray DecodeB64IfValid(const QString &input, QByteArray::Base64Options options = QByteArray::Base64Option::Base64Encoding);
 
-// URL
+
 
 class QUrlQuery;
 
@@ -76,7 +76,7 @@ QString GetRandomString(int randomStringLength);
 
 quint64 GetRandomUint64();
 
-// JSON
+
 
 class QJsonObject;
 class QJsonArray;
@@ -101,13 +101,13 @@ QList<int> QJsonArray2QListInt(const QJsonArray &arr);
 
 QList<QString> QJsonArray2QListString(const QJsonArray &arr);
 
-// Files
+
 
 QByteArray ReadFile(const QString &path);
 
 QString ReadFileText(const QString &path);
 
-// Validators
+
 
 bool IsIpAddress(const QString &str);
 
@@ -115,12 +115,12 @@ bool IsIpAddressV4(const QString &str);
 
 bool IsIpAddressV6(const QString &str);
 
-// [2001:4860:4860::8888] -> 2001:4860:4860::8888
+
 inline QString UnwrapIPV6Host(QString &str) {
     return str.replace("[", "").replace("]", "");
 }
 
-// [2001:4860:4860::8888] or 2001:4860:4860::8888 -> [2001:4860:4860::8888]
+
 inline QString WrapIPV6Host(QString &str) {
     if (!IsIpAddressV6(str)) return str;
     return "[" + UnwrapIPV6Host(str) + "]";
@@ -131,7 +131,7 @@ inline QString DisplayAddress(QString serverAddress, int serverPort) {
     return WrapIPV6Host(serverAddress) + ":" + Int2String(serverPort);
 };
 
-// Format & Misc
+
 
 int MkPort();
 
@@ -147,7 +147,7 @@ inline bool IsValidPort(int port) {
     return InRange(port, 1, 65535);
 }
 
-// UI
+
 
 QWidget *GetMessageBoxParent();
 
@@ -157,7 +157,7 @@ int MessageBoxInfo(const QString &title, const QString &text);
 
 void ActivateWindow(QWidget *w);
 
-//
+
 
 void runOnUiThread(const std::function<void()> &callback, QObject *parent = nullptr);
 

@@ -20,7 +20,7 @@ namespace NekoGui_fmt {
     class CustomBean;
 
     class ChainBean;
-}; // namespace NekoGui_fmt
+};
 
 namespace NekoGui {
     class ProxyEntity : public JsonStore {
@@ -73,4 +73,4 @@ namespace NekoGui {
             return (NekoGui_fmt::CustomBean *) bean.get();
         };
     };
-} // namespace NekoGui
+}

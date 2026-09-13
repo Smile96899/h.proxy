@@ -1,7 +1,7 @@
-// DO NOT INCLUDE THIS
+
 
 namespace NekoGui_ConfigItem {
-    // config 工具
+
     enum itemType {
         string,
         integer,
@@ -25,7 +25,7 @@ namespace NekoGui_ConfigItem {
         }
     };
 
-    // 可格式化对象
+
     class JsonStore {
     public:
         QMap<QString, std::shared_ptr<configItem>> _map;
@@ -34,7 +34,7 @@ namespace NekoGui_ConfigItem {
         std::function<void()> callback_before_save = nullptr;
 
         QString fn;
-        bool load_control_must = false; // must load from file
+        bool load_control_must = false;
         bool save_control_compact = false;
         bool save_control_no_save = false;
         QByteArray last_save_content;
@@ -65,6 +65,6 @@ namespace NekoGui_ConfigItem {
 
         bool Load();
     };
-} // namespace NekoGui_ConfigItem
+}
 
 using namespace NekoGui_ConfigItem;

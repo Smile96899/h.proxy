@@ -58,14 +58,14 @@ namespace QtGrpc {
         QString serviceName;
         QByteArray nekoray_auth;
 
-        // async
+
         QNetworkReply *post(const QString &method, const QString &service, const QByteArray &args) {
             QUrl callUrl = url_base + "/" + service + "/" + method;
-            // qDebug() << "Service call url: " << callUrl;
+
 
             QNetworkRequest request(callUrl);
-            // request.setAttribute(QNetworkRequest::CacheSaveControlAttribute, false);
-            // request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
             request.setAttribute(QNetworkRequest::Http2DirectAttribute, true);
 #endif
@@ -79,20 +79,20 @@ namespace QtGrpc {
             QByteArray msg(GrpcMessageSizeHeaderSize, '\0');
             *reinterpret_cast<int *>(msg.data() + 1) = qToBigEndian((int) args.size());
             msg += args;
-            // qDebug() << "SEND: " << msg.size();
+
 
             QNetworkReply *networkReply = nm->post(request, msg);
             return networkReply;
         }
 
         static QByteArray processReply(QNetworkReply *networkReply, QNetworkReply::NetworkError &statusCode) {
-            // Check if no network error occured
+
             if (networkReply->error() != QNetworkReply::NoError) {
                 statusCode = networkReply->error();
                 return {};
             }
 
-            // Check if server answer with error
+
             auto errCode = networkReply->rawHeader(GrpcStatusHeader).toInt();
             if (errCode != 0) {
                 QStringList errstr;
@@ -131,8 +131,8 @@ namespace QtGrpc {
 
             auto grpcStatus = QNetworkReply::NetworkError::ProtocolUnknownError;
             qByteArray = processReply(networkReply, grpcStatus);
-            // qDebug() << __func__ << "RECV: " << qByteArray.toHex() << "grpcStatus" << grpcStatus;
-            // qDebug() << networkReply->rawHeaderPairs();
+
+
 
             networkReply->deleteLater();
             return grpcStatus;
@@ -143,7 +143,7 @@ namespace QtGrpc {
             url_base = "http://" + url_;
             nekoray_auth = nekoray_auth_.toLatin1();
             serviceName = serviceName_;
-            //
+
             thread = new QThread;
             nm = new QNetworkAccessManager();
             nm->setCache(new NoCache);
@@ -181,8 +181,8 @@ namespace QtGrpc {
 
             lock.lock();
             lock.unlock();
-            // qDebug() << "rsp err" << err;
-            // qDebug() << "rsp array" << responseArray;
+
+
 
             if (err != QNetworkReply::NetworkError::NoError) {
                 return err;
@@ -193,7 +193,7 @@ namespace QtGrpc {
             return QNetworkReply::NetworkError::NoError;
         }
     };
-} // namespace QtGrpc
+}
 
 namespace NekoGui_rpc {
 
@@ -267,7 +267,7 @@ namespace NekoGui_rpc {
         }
     }
 
-    //
+
 
     libcore::TestResp Client::Test(bool *rpcOK, const libcore::TestReq &request) {
         libcore::TestResp reply;
@@ -294,6 +294,6 @@ namespace NekoGui_rpc {
             return reply;
         }
     }
-} // namespace NekoGui_rpc
+}
 
 #endif

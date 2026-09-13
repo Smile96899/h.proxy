@@ -38,7 +38,7 @@ void EditQUIC::onStart(std::shared_ptr<NekoGui::ProxyEntity> _ent) {
     P_LOAD_STRING(heartbeat);
     P_LOAD_BOOL(uos);
 
-    // TLS
+
     P_LOAD_STRING(sni);
     P_LOAD_STRING(alpn);
     P_C_LOAD_STRING(caText);
@@ -91,7 +91,7 @@ bool EditQUIC::onEnd() {
 
     P_SAVE_BOOL(forceExternal);
 
-    // Hysteria 2
+
     P_SAVE_STRING(hopPort);
     P_SAVE_INT(hopInterval);
     P_SAVE_INT(uploadMbps);
@@ -101,7 +101,7 @@ bool EditQUIC::onEnd() {
     P_SAVE_INT(streamReceiveWindow);
     P_SAVE_INT(connectionReceiveWindow);
 
-    // TUIC
+
     P_SAVE_STRING(uuid);
     P_SAVE_STRING(password);
     P_SAVE_COMBO_STRING(congestionControl);
@@ -110,7 +110,7 @@ bool EditQUIC::onEnd() {
     P_SAVE_STRING(heartbeat);
     P_SAVE_BOOL(uos);
 
-    // TLS
+
     P_SAVE_STRING(sni);
     P_SAVE_STRING(alpn);
     P_SAVE_BOOL(allowInsecure);

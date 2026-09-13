@@ -7,7 +7,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# WINDOWS PDB FILE
+
 if (WIN32)
     if (MSVC)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
@@ -15,7 +15,7 @@ if (WIN32)
     endif ()
 endif ()
 
-# Find Qt
+
 if (NOT QT_VERSION_MAJOR)
     set(QT_VERSION_MAJOR 5)
 endif ()
@@ -29,14 +29,14 @@ if (NKR_CROSS)
     set_property(TARGET Qt5::lupdate PROPERTY IMPORTED_LOCATION /usr/bin/lupdate)
 endif ()
 
-#### Platform Variables ####
+
 if (WIN32)
     include("cmake/windows/windows.cmake")
 else ()
     include("cmake/linux/linux.cmake")
 endif ()
 
-#### default prefix path ####
+
 
 if (NOT NKR_LIBS)
     if (NKR_PACKAGE)
@@ -52,18 +52,18 @@ endif ()
 
 message("[CMAKE_PREFIX_PATH] ${CMAKE_PREFIX_PATH}")
 
-# for some cross toolchain
+
 list(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
 message("[CMAKE_FIND_ROOT_PATH] ${CMAKE_FIND_ROOT_PATH}")
 
-#### NKR ####
+
 
 include("cmake/print.cmake")
 include("cmake/nkr.cmake")
 
 find_package(Threads)
 
-#### NKR EXTERNAL ####
+
 
 if (NKR_NO_EXTERNAL)
     set(NKR_NO_GRPC 1)
@@ -72,24 +72,24 @@ if (NKR_NO_EXTERNAL)
     set(NKR_NO_QHOTKEY 1)
 endif ()
 
-# grpc
+
 if (NKR_NO_GRPC)
     nkr_add_compile_definitions(NKR_NO_GRPC)
 else ()
-    # My proto
+
     include("cmake/myproto.cmake")
     list(APPEND NKR_EXTERNAL_TARGETS myproto)
 endif ()
 
-# yaml-cpp
+
 if (NKR_NO_YAML)
     nkr_add_compile_definitions(NKR_NO_YAML)
 else ()
-    find_package(yaml-cpp CONFIG REQUIRED) # only Release is built
+    find_package(yaml-cpp CONFIG REQUIRED)
     list(APPEND NKR_EXTERNAL_TARGETS yaml-cpp)
 endif ()
 
-# zxing-cpp
+
 if (NKR_NO_ZXING)
     nkr_add_compile_definitions(NKR_NO_ZXING)
 else ()
@@ -97,7 +97,7 @@ else ()
     list(APPEND NKR_EXTERNAL_TARGETS ZXing::ZXing)
 endif ()
 
-# QHotkey (static submodule)
+
 if (NKR_NO_QHOTKEY)
     nkr_add_compile_definitions(NKR_NO_QHOTKEY)
 else ()
@@ -107,7 +107,7 @@ else ()
     list(APPEND NKR_EXTERNAL_TARGETS qhotkey)
 endif ()
 
-#### debug print ####
+
 
 if (DBG_CMAKE)
     print_all_variables()
@@ -118,7 +118,7 @@ if (DBG_CMAKE)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CMAKE_COMMAND} -E time")
 endif ()
 
-# Sources
+
 set(PROJECT_SOURCES
         ${PLATFORM_SOURCES}
 
@@ -153,7 +153,7 @@ set(PROJECT_SOURCES
         fmt/Bean2External.cpp
         fmt/Bean2Link.cpp
         fmt/Link2Bean.cpp
-        fmt/ChainBean.hpp # translate
+        fmt/ChainBean.hpp
 
         sub/GroupUpdater.cpp
 
@@ -235,23 +235,23 @@ set(PROJECT_SOURCES
         ${QV2RAY_RC}
 )
 
-# Qt exe
+
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(h
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
     )
-    # Define target properties for Android with Qt 6 as:
-    #    set_property(TARGET h APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-    #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-    # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+
+
+
+
 else ()
     if (ANDROID)
         add_library(h SHARED
                 ${PROJECT_SOURCES}
         )
-        # Define properties for Android with Qt 5 after find_package() calls as:
-        #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+
+
     else ()
         add_executable(h
                 ${PROJECT_SOURCES}
@@ -259,7 +259,7 @@ else ()
     endif ()
 endif ()
 
-# Target
+
 
 set_property(TARGET h PROPERTY AUTOUIC ON)
 set_property(TARGET h PROPERTY AUTOMOC ON)
@@ -269,7 +269,7 @@ set_target_properties(h PROPERTIES
         WIN32_EXECUTABLE TRUE
 )
 
-# Target Source Translations
+
 
 set(TS_FILES
         translations/zh_CN.ts
@@ -288,7 +288,7 @@ endif ()
 configure_file(translations/translations.qrc ${CMAKE_BINARY_DIR} COPYONLY)
 target_sources(h PRIVATE ${CMAKE_BINARY_DIR}/translations.qrc)
 
-# Target Link
+
 
 target_link_libraries(h PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Svg

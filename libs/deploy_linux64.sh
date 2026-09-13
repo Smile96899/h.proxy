@@ -6,17 +6,17 @@ DEST=$DEPLOYMENT/linux64
 rm -rf $DEST
 mkdir -p $DEST
 
-#### copy binary ####
+
 cp $BUILD/nekobox $DEST
 
-#### Download: prebuilt runtime ####
+
 curl -Lso usr.zip https://github.com/MatsuriDayo/nekoray_qt_runtime/releases/download/20220503/20230202-5.12.8-ubuntu20.04-linux64.zip
 unzip usr.zip
 mv usr $DEST
 
 
-#### copy so ####
-# 5.11 looks buggy on new systems...
+
+
 exit
 
 USR_LIB=/usr/lib/x86_64-linux-gnu
