@@ -1,20 +1,17 @@
 # h.proxy for Windows · 代理客户端
 
-[中文](README.md) | [English](README.en.md)
+[中文](https://github.com/Smile96899/h.proxy/blob/main/README.md) | [English](https://github.com/Smile96899/h.proxy/blob/main/README.en.md)
 
 软件名称 **h.**，当前版本 **v1.0**。面向 **Windows x64**，采用 C++ / Qt 界面和 Go 网络核心。
 
 ## 下载安装包直接使用
 
 - **[h.proxy for Windows — 下载安装包](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
-- [SHA256 校验文件](https://github.com/Smile96899/h.proxy/releases/latest/download/SHA256SUMS.txt)
-- [所有版本与下载文件](https://github.com/Smile96899/h.proxy/releases)
 
-**普通用户下载安装 EXE 即可，不需要准备开发依赖，也不需要自行编译。** 运行依赖随包提供。安装包在版本发布页单独提供，不放进源码目录；源码 ZIP 不是安装程序。
 
-默认安装目录为 `%LOCALAPPDATA%\Programs\h`，配置保存在 `%LOCALAPPDATA%\h\config`。最后一页的“创建桌面快捷方式”默认不勾选，只有勾选并点击完成才创建。升级不会用发布包覆盖个人配置，卸载保留配置。关闭主窗口 × 会退出主程序和核心。
+安装完成时可选择创建桌面快捷方式，默认不勾选。升级与卸载保留个人配置；点击主窗口 × 会退出程序。
 
-安装包未做商业代码签名，Windows 可能显示未知发布者。请核对下载来源和 SHA256，不需要关闭安全软件。
+此安装包尚未签名，Windows 可能提示“未知发布者”。请仅从本仓库下载。
 
 ## 功能
 
@@ -54,9 +51,3 @@
 - `libs/package_h.ps1`：生成便携 ZIP。
 - `installer/h.iss`：中文安装器与最后一页快捷方式选项。
 - `h_version.txt`：软件显示版本。
-
-旧上游发布工作流保存在 `docs/legacy-workflows/`，不会自动运行。当前构建方式以中文构建教程为准。
-
-## 来源与许可证
-
-本项目基于 [MatsuriDayo/nekoray](https://github.com/MatsuriDayo/nekoray) 二次开发，保留其 Git 历史；源代码使用 [GPL-3.0](LICENSE)。Qt、sing-box、QHotkey 等第三方组件适用各自的许可证。品牌调整不改变原有许可条款。

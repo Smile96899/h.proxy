@@ -1,20 +1,17 @@
 # h.proxy for Windows · Proxy client
 
-[中文](README.md) | [English](README.en.md)
+[中文](https://github.com/Smile96899/h.proxy/blob/main/README.md) | [English](https://github.com/Smile96899/h.proxy/blob/main/README.en.md)
 
 **h. v1.0** is a **Windows x64** desktop proxy client with a C++ / Qt interface and a Go networking core.
 
 ## Download and install — no build required
 
 - **[h.proxy for Windows — Download the installer](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
-- [SHA256 checksums](https://github.com/Smile96899/h.proxy/releases/latest/download/SHA256SUMS.txt)
-- [All releases and downloads](https://github.com/Smile96899/h.proxy/releases)
 
-**End users can download and run the EXE directly. No development dependencies or compilation are required.** Runtime dependencies are bundled. The installer is published separately under Releases, not stored in the source tree. GitHub's source ZIP is not an installer.
 
-The default installation directory is `%LOCALAPPDATA%\Programs\h`; settings are stored in `%LOCALAPPDATA%\h\config`. The desktop-shortcut checkbox on the final page is **unchecked by default**. A shortcut is created only when you select it and click Finish. Upgrades do not overwrite personal settings with release files, and uninstalling preserves settings. Closing the main window exits both the application and its core.
+Creating a desktop shortcut is optional and unchecked by default. Upgrades and uninstalling preserve personal settings. Closing the main window exits the application and its core.
 
-The installer is unsigned. Windows may display an unknown-publisher warning. Verify the download source and SHA256; do not disable security software.
+This installer is unsigned, so Windows may show an “unknown publisher” warning. Download it only from this repository.
 
 ## Features
 
@@ -54,9 +51,3 @@ The complete guide includes download sources, directory layout, pinned dependenc
 - `libs/package_h.ps1`: create a portable ZIP.
 - `installer/h.iss`: Chinese installer and final-page shortcut option.
 - `h_version.txt`: displayed application version.
-
-Legacy upstream release workflows are archived in `docs/legacy-workflows/` and do not run automatically. Follow the English build guide for the current build process.
-
-## Origin and license
-
-This project is derived from [MatsuriDayo/nekoray](https://github.com/MatsuriDayo/nekoray) and retains its Git history. The source code is licensed under [GPL-3.0](LICENSE). Third-party components, including Qt, sing-box and QHotkey, retain their respective licenses. Branding changes do not change the applicable license terms.
