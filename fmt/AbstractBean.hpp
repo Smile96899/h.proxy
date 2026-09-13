@@ -17,9 +17,9 @@ namespace NekoGui_fmt {
         QString program;
         QStringList env;
         QStringList arguments;
-        //
+
         QString tag;
-        //
+
         QString error;
         QString config_export;
     };
@@ -37,13 +37,13 @@ namespace NekoGui_fmt {
 
         explicit AbstractBean(int version);
 
-        //
+
 
         QString ToNekorayShareLink(const QString &type);
 
         void ResolveDomainToIP(const std::function<void()> &onFinished);
 
-        //
+
 
         [[nodiscard]] virtual QString DisplayAddress();
 
@@ -55,7 +55,7 @@ namespace NekoGui_fmt {
 
         virtual QString DisplayTypeAndName();
 
-        //
+
 
         virtual int NeedExternal(bool isFirstProfile) { return 0; };
 
@@ -66,4 +66,4 @@ namespace NekoGui_fmt {
         virtual QString ToShareLink() { return {}; };
     };
 
-} // namespace NekoGui_fmt
+}

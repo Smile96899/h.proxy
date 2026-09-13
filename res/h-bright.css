@@ -1,4 +1,4 @@
-/* h. bright, spacious interface layer. */
+
 QWidget { font-family: "Microsoft YaHei UI", "Segoe UI Variable", "Segoe UI", sans-serif; font-size: 10pt; color: #172033; background-color: #F5F7FB; }
 QMainWindow, QDialog { background-color: #F5F7FB; }
 QMenuBar { background: #FFFFFF; border-bottom: 1px solid #E5E9F2; padding: 3px 8px; }

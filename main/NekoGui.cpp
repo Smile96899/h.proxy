@@ -20,7 +20,7 @@
 
 namespace NekoGui_ConfigItem {
 
-    // 添加关联
+
     void JsonStore::_add(configItem *item) {
         _map.insert(item->name, std::shared_ptr<configItem>(item));
     }
@@ -33,7 +33,7 @@ namespace NekoGui_ConfigItem {
     }
 
     std::shared_ptr<configItem> JsonStore::_get(const QString &name) {
-        // 直接 [] 会设置一个 nullptr ，所以先判断是否存在
+
         if (_map.contains(name)) {
             return _map[name];
         }
@@ -57,7 +57,7 @@ namespace NekoGui_ConfigItem {
             case itemType::integer64:
                 *(long long *) item->ptr = *(long long *) p;
                 break;
-            // others...
+
             case stringList:
             case integerList:
             case jsonStore:
@@ -72,7 +72,7 @@ namespace NekoGui_ConfigItem {
             if (without.contains(item->name)) continue;
             switch (item->type) {
                 case itemType::string:
-                    // Allow Empty
+
                     if (!((QString *) item->ptr)->isEmpty()) {
                         object.insert(item->name, *(QString *) item->ptr);
                     }
@@ -93,7 +93,7 @@ namespace NekoGui_ConfigItem {
                     object.insert(item->name, QList2QJsonArray<int>(*(QList<int> *) item->ptr));
                     break;
                 case itemType::jsonStore:
-                    // _add 时应关联对应 JsonStore 的指针
+
                     object.insert(item->name, ((JsonStore *) item->ptr)->ToJson());
                     break;
             }
@@ -117,9 +117,9 @@ namespace NekoGui_ConfigItem {
             auto item = _map[key].get();
 
             if (item == nullptr)
-                continue; // 故意忽略
+                continue;
 
-            // 根据类型修改ptr的内容
+
             switch (item->type) {
                 case itemType::string:
                     if (value.type() != QJsonValue::String) {
@@ -218,13 +218,13 @@ namespace NekoGui_ConfigItem {
         return ok;
     }
 
-} // namespace NekoGui_ConfigItem
+}
 
 namespace NekoGui {
 
     DataStore *dataStore = new DataStore();
 
-    // datastore
+
 
     DataStore::DataStore() : JsonStore() {
         _add(new configItem("extraCore", dynamic_cast<JsonStore *>(extraCore), itemType::jsonStore));
@@ -308,7 +308,7 @@ namespace NekoGui {
         return user_agent;
     }
 
-    // preset routing
+
     Routing::Routing(int preset) : JsonStore() {
         if (preset == 1) {
             direct_ip =
@@ -334,7 +334,7 @@ namespace NekoGui {
         _add(new configItem("block_domain", &this->block_domain, itemType::string));
         _add(new configItem("def_outbound", &this->def_outbound, itemType::string));
         _add(new configItem("custom", &this->custom, itemType::string));
-        //
+
         _add(new configItem("remote_dns", &this->remote_dns, itemType::string));
         _add(new configItem("remote_dns_strategy", &this->remote_dns_strategy, itemType::string));
         _add(new configItem("direct_dns", &this->direct_dns, itemType::string));
@@ -377,7 +377,7 @@ namespace NekoGui {
         return ok;
     }
 
-    // NO default extra core
+
 
     ExtraCore::ExtraCore() : JsonStore() {
         _add(new configItem("core_map", &this->core_map, itemType::string));
@@ -412,7 +412,7 @@ namespace NekoGui {
         return !username.trimmed().isEmpty() && !password.trimmed().isEmpty();
     }
 
-    // System Utils
+
 
     QString FindCoreAsset(const QString &name) {
         QStringList search{};
@@ -441,7 +441,7 @@ namespace NekoGui {
 
     short isAdminCache = -1;
 
-    // IsAdmin 主要判断：有无权限启动 Tun
+
     bool IsAdmin() {
         if (isAdminCache >= 0) return isAdminCache;
 
@@ -459,4 +459,4 @@ namespace NekoGui {
         return admin;
     };
 
-} // namespace NekoGui
+}

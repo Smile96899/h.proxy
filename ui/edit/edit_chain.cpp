@@ -57,7 +57,7 @@ void EditChain::AddProfileToListIfExist(int profileId) {
         auto w = new ProxyItem(this, _ent, wI);
         ui->listWidget->addItem(wI);
         ui->listWidget->setItemWidget(wI, w);
-        // change button
+
         connect(w->get_change_button(), &QPushButton::clicked, w, [=] {
             get_edit_dialog()->hide();
             GetMainWindow()->start_select_mode(w, [=](int newId) {

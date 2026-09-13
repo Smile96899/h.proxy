@@ -52,17 +52,17 @@ namespace NekoGui_fmt {
             return;
         }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0) // TODO older QT
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
         QHostInfo::lookupHost(serverAddress, QApplication::instance(), [=](const QHostInfo &host) {
             auto addr = host.addresses();
             if (!addr.isEmpty()) {
                 auto domain = serverAddress;
                 auto stream = GetStreamSettings(this);
 
-                // replace serverAddress
+
                 serverAddress = addr.first().toString();
 
-                // replace ws tls
+
                 if (stream != nullptr) {
                     if (stream->security == "tls" && stream->sni.isEmpty()) {
                         stream->sni = domain;
@@ -76,4 +76,4 @@ namespace NekoGui_fmt {
         });
 #endif
     }
-} // namespace NekoGui_fmt
+}

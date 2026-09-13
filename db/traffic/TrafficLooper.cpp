@@ -16,23 +16,23 @@ namespace NekoGui_traffic {
 
     TrafficData *TrafficLooper::update_stats(TrafficData *item) {
 #ifndef NKR_NO_GRPC
-        // last update
+
         auto now = elapsedTimer.elapsed();
         auto interval = now - item->last_update;
         item->last_update = now;
         if (interval <= 0) return nullptr;
 
-        // query
+
         auto uplink = NekoGui_rpc::defaultClient->QueryStats(item->tag, "uplink");
         auto downlink = NekoGui_rpc::defaultClient->QueryStats(item->tag, "downlink");
 
-        // add diff
+
         item->downlink += downlink;
         item->uplink += uplink;
         item->downlink_rate = downlink * 1000 / interval;
         item->uplink_rate = uplink * 1000 / interval;
 
-        // return diff
+
         auto ret = new TrafficData(item->tag);
         ret->downlink = downlink;
         ret->uplink = uplink;
@@ -54,11 +54,11 @@ namespace NekoGui_traffic {
     }
 
     void TrafficLooper::UpdateAll() {
-        std::map<std::string, TrafficData *> updated; // tag to diff
+        std::map<std::string, TrafficData *> updated;
         for (const auto &item: this->items) {
             auto data = item.get();
             auto diff = updated[data->tag];
-            // 避免重复查询一个 outbound tag
+
             if (diff == nullptr) {
                 diff = update_stats(data);
                 updated[data->tag] = diff;
@@ -70,7 +70,7 @@ namespace NekoGui_traffic {
             }
         }
         updated[bypass->tag] = update_stats(bypass);
-        //
+
         for (const auto &pair: updated) {
             delete pair.second;
         }
@@ -82,11 +82,11 @@ namespace NekoGui_traffic {
             auto sleep_ms = NekoGui::dataStore->traffic_loop_interval;
             if (sleep_ms < 500 || sleep_ms > 5000) sleep_ms = 1000;
             QThread::msleep(sleep_ms);
-            if (NekoGui::dataStore->traffic_loop_interval == 0) continue; // user disabled
+            if (NekoGui::dataStore->traffic_loop_interval == 0) continue;
 
-            // profile start and stop
+
             if (!loop_enabled) {
-                // 停止
+
                 if (looping) {
                     looping = false;
                     runOnUiThread([=] {
@@ -96,18 +96,18 @@ namespace NekoGui_traffic {
                 }
                 continue;
             } else {
-                // 开始
+
                 if (!looping) {
                     looping = true;
                 }
             }
 
-            // do update
+
             loop_mutex.lock();
 
             UpdateAll();
 
-            // do conn list update
+
             QJsonArray conn_list;
             if (NekoGui::dataStore->connection_statistics) {
                 conn_list = get_connection_list();
@@ -115,7 +115,7 @@ namespace NekoGui_traffic {
 
             loop_mutex.unlock();
 
-            // post to UI
+
             runOnUiThread([=] {
                 auto m = GetMainWindow();
                 if (proxy != nullptr) {
@@ -132,4 +132,4 @@ namespace NekoGui_traffic {
         }
     }
 
-} // namespace NekoGui_traffic
+}

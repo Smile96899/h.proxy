@@ -6,7 +6,7 @@
 namespace NekoGui_fmt {
     QString SocksHttpBean::ToShareLink() {
         QUrl url;
-        if (socks_http_type == type_HTTP) { // http
+        if (socks_http_type == type_HTTP) {
             if (stream->security == "tls") {
                 url.setScheme("https");
             } else {
@@ -32,7 +32,7 @@ namespace NekoGui_fmt {
         url.setPort(serverPort);
         if (!name.isEmpty()) url.setFragment(name);
 
-        //  security
+
         auto security = stream->security;
         if (security == "tls" && !stream->reality_pbk.trimmed().isEmpty()) security = "reality";
         query.addQueryItem("security", security);
@@ -48,7 +48,7 @@ namespace NekoGui_fmt {
             if (!stream->reality_spx.isEmpty()) query.addQueryItem("spx", stream->reality_spx);
         }
 
-        // type
+
         query.addQueryItem("type", stream->network);
 
         if (stream->network == "ws" || stream->network == "http" || stream->network == "httpupgrade") {
@@ -64,7 +64,7 @@ namespace NekoGui_fmt {
             }
         }
 
-        // protocol
+
         if (proxy_type == proxy_VLESS) {
             if (!flow.isEmpty()) {
                 query.addQueryItem("flow", flow);
@@ -93,7 +93,7 @@ namespace NekoGui_fmt {
         QUrlQuery q;
         if (!plugin.isEmpty()) q.addQueryItem("plugin", plugin);
         if (!q.isEmpty()) url.setQuery(q);
-        //
+
         auto link = url.toString(QUrl::FullyEncoded);
         link = link.replace(fixShadowsocksUserNameEncodeMagic, method + ":" + QUrl::toPercentEncoding(password));
         return link;
@@ -101,7 +101,7 @@ namespace NekoGui_fmt {
 
     QString VMessBean::ToShareLink() {
         if (NekoGui::dataStore->old_share_link_format) {
-            // v2rayN format
+
             QJsonObject N{
                 {"v", "2"},
                 {"ps", name},
@@ -119,7 +119,7 @@ namespace NekoGui_fmt {
             };
             return "vmess://" + QJsonObject2QString(N, true).toUtf8().toBase64();
         } else {
-            // ducksoft format
+
             QUrl url;
             QUrlQuery query;
             url.setScheme("vmess");
@@ -130,7 +130,7 @@ namespace NekoGui_fmt {
 
             query.addQueryItem("encryption", security);
 
-            //  security
+
             auto security = stream->security;
             if (security == "tls" && !stream->reality_pbk.trimmed().isEmpty()) security = "reality";
             query.addQueryItem("security", security);
@@ -149,7 +149,7 @@ namespace NekoGui_fmt {
                 if (!stream->reality_spx.isEmpty()) query.addQueryItem("spx", stream->reality_spx);
             }
 
-            // type
+
             query.addQueryItem("type", stream->network);
 
             if (stream->network == "ws" || stream->network == "http" || stream->network == "httpupgrade") {
@@ -222,4 +222,4 @@ namespace NekoGui_fmt {
         return url.toString(QUrl::FullyEncoded);
     }
 
-} // namespace NekoGui_fmt
+}

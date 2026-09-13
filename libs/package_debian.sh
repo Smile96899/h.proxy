@@ -9,7 +9,7 @@ mv nekoray/opt/linux64 nekoray/opt/nekoray
 rm -rf nekoray/opt/nekoray/usr
 rm nekoray/opt/nekoray/launcher
 
-# basic
+
 cat >nekoray/DEBIAN/control <<-EOF
 Package: nekoray
 Version: $version
@@ -40,6 +40,6 @@ EOF
 
 sudo chmod 0755 nekoray/DEBIAN/postinst
 
-# desktop && PATH
+
 
 sudo dpkg-deb -Zxz --build nekoray

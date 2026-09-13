@@ -1,12 +1,12 @@
 #include "QvProxyConfigurator.hpp"
 
 #ifdef Q_OS_WIN
-//
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
-//
+
 #include <wininet.h>
 #include <ras.h>
 #include <raserror.h>
@@ -41,9 +41,9 @@ namespace Qv2ray::components::proxy {
         auto lines = SplitLines(str);
         QStringList result;
 
-        // Start from 1 since first line is unneeded.
+
         for (auto i = 1; i < lines.count(); i++) {
-            // * means disabled.
+
             if (!lines[i].contains("*")) {
                 result << lines[i];
             }
@@ -55,23 +55,23 @@ namespace Qv2ray::components::proxy {
 #endif
 #ifdef Q_OS_WIN
 #define NO_CONST(expr) const_cast<wchar_t *>(expr)
-    // static auto DEFAULT_CONNECTION_NAME =
-    // NO_CONST(L"DefaultConnectionSettings");
-    ///
-    /// INTERNAL FUNCTION
+
+
+
+
     bool __QueryProxyOptions() {
         INTERNET_PER_CONN_OPTION_LIST List;
         INTERNET_PER_CONN_OPTION Option[5];
-        //
+
         unsigned long nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
         Option[0].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
         Option[1].dwOption = INTERNET_PER_CONN_AUTODISCOVERY_FLAGS;
         Option[2].dwOption = INTERNET_PER_CONN_FLAGS;
         Option[3].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
         Option[4].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
-        //
+
         List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
-        List.pszConnection = nullptr; // NO_CONST(DEFAULT_CONNECTION_NAME);
+        List.pszConnection = nullptr;
         List.dwOptionCount = 5;
         List.dwOptionError = 0;
         List.pOptions = Option;
@@ -131,29 +131,29 @@ namespace Qv2ray::components::proxy {
     bool __SetProxyOptions(LPWSTR proxy_full_addr, bool isPAC) {
         INTERNET_PER_CONN_OPTION_LIST list;
         DWORD dwBufSize = sizeof(list);
-        // Fill the list structure.
+
         list.dwSize = sizeof(list);
-        // NULL == LAN, otherwise connectoid name.
+
         list.pszConnection = nullptr;
 
         if (nullptr == proxy_full_addr) {
             LOG("Clearing system proxy");
-            //
+
             list.dwOptionCount = 1;
             list.pOptions = new INTERNET_PER_CONN_OPTION[1];
 
-            // Ensure that the memory was allocated.
+
             if (nullptr == list.pOptions) {
-                // Return if the memory wasn't allocated.
+
                 return false;
             }
 
-            // Set flags.
+
             list.pOptions[0].dwOption = INTERNET_PER_CONN_FLAGS;
             list.pOptions[0].Value.dwValue = PROXY_TYPE_DIRECT;
         } else if (isPAC) {
             LOG("Setting system proxy for PAC");
-            //
+
             list.dwOptionCount = 2;
             list.pOptions = new INTERNET_PER_CONN_OPTION[2];
 
@@ -161,15 +161,15 @@ namespace Qv2ray::components::proxy {
                 return false;
             }
 
-            // Set flags.
+
             list.pOptions[0].dwOption = INTERNET_PER_CONN_FLAGS;
             list.pOptions[0].Value.dwValue = PROXY_TYPE_DIRECT | PROXY_TYPE_AUTO_PROXY_URL;
-            // Set proxy name.
+
             list.pOptions[1].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
             list.pOptions[1].Value.pszValue = proxy_full_addr;
         } else {
             LOG("Setting system proxy for Global Proxy");
-            //
+
             list.dwOptionCount = 2;
             list.pOptions = new INTERNET_PER_CONN_OPTION[2];
 
@@ -177,19 +177,19 @@ namespace Qv2ray::components::proxy {
                 return false;
             }
 
-            // Set flags.
+
             list.pOptions[0].dwOption = INTERNET_PER_CONN_FLAGS;
             list.pOptions[0].Value.dwValue = PROXY_TYPE_DIRECT | PROXY_TYPE_PROXY;
-            // Set proxy name.
+
             list.pOptions[1].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
             list.pOptions[1].Value.pszValue = proxy_full_addr;
-            // Set proxy override.
-            // list.pOptions[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
-            // auto localhost = L"localhost";
-            // list.pOptions[2].Value.pszValue = NO_CONST(localhost);
+
+
+
+
         }
 
-        // Set proxy for LAN.
+
         if (!InternetSetOption(nullptr, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, dwBufSize)) {
             LOG("InternetSetOption failed for LAN, GLE=" + QSTRN(GetLastError()));
         }
@@ -211,7 +211,7 @@ namespace Qv2ray::components::proxy {
             return false;
         }
 
-        // Set proxy for each connectoid.
+
         for (DWORD i = 0; i < count; ++i) {
             list.pszConnection = entryAddr[i].szEntryName;
             if (!InternetSetOption(nullptr, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, dwBufSize)) {
@@ -259,11 +259,11 @@ namespace Qv2ray::components::proxy {
         str = str.replace("{ip}", address)
                   .replace("{http_port}", Int2String(httpPort))
                   .replace("{socks_port}", Int2String(socksPort));
-        //
+
         LOG("Windows proxy string: " + str);
         auto proxyStrW = new WCHAR[str.length() + 1];
         wcscpy(proxyStrW, str.toStdWString().c_str());
-        //
+
         __QueryProxyOptions();
 
         if (!__SetProxyOptions(proxyStrW, false)) {
@@ -274,17 +274,17 @@ namespace Qv2ray::components::proxy {
 #elif defined(Q_OS_LINUX)
         QList<ProcessArgument> actions;
         actions << ProcessArgument{"gsettings", {"set", "org.gnome.system.proxy", "mode", "manual"}};
-        //
+
         bool isKDE = qEnvironmentVariable("XDG_SESSION_DESKTOP") == "KDE" ||
                      qEnvironmentVariable("XDG_SESSION_DESKTOP") == "plasma";
         const auto configPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
 
-        //
-        // Configure HTTP Proxies for HTTP, FTP and HTTPS
+
+
         if (hasHTTP) {
-            // iterate over protocols...
+
             for (const auto &protocol: QStringList{"http", "ftp", "https"}) {
-                // for GNOME:
+
                 {
                     actions << ProcessArgument{"gsettings",
                                                {"set", "org.gnome.system.proxy." + protocol, "host", address}};
@@ -292,69 +292,69 @@ namespace Qv2ray::components::proxy {
                                                {"set", "org.gnome.system.proxy." + protocol, "port", QSTRN(httpPort)}};
                 }
 
-                // for KDE:
+
                 if (isKDE) {
                     actions << ProcessArgument{"kwriteconfig5",
-                                               {"--file", configPath + "/kioslaverc", //
-                                                "--group", "Proxy Settings",          //
-                                                "--key", protocol + "Proxy",          //
+                                               {"--file", configPath + "/kioslaverc",
+                                                "--group", "Proxy Settings",
+                                                "--key", protocol + "Proxy",
                                                 "http://" + address + " " + QSTRN(httpPort)}};
                 }
             }
         }
 
-        // Configure SOCKS5 Proxies
+
         if (hasSOCKS) {
-            // for GNOME:
+
             {
                 actions << ProcessArgument{"gsettings", {"set", "org.gnome.system.proxy.socks", "host", address}};
                 actions << ProcessArgument{"gsettings",
                                            {"set", "org.gnome.system.proxy.socks", "port", QSTRN(socksPort)}};
 
-                // for KDE:
+
                 if (isKDE) {
                     actions << ProcessArgument{"kwriteconfig5",
-                                               {"--file", configPath + "/kioslaverc", //
-                                                "--group", "Proxy Settings",          //
-                                                "--key", "socksProxy",                //
+                                               {"--file", configPath + "/kioslaverc",
+                                                "--group", "Proxy Settings",
+                                                "--key", "socksProxy",
                                                 "socks://" + address + " " + QSTRN(socksPort)}};
                 }
             }
         }
-        // Setting Proxy Mode to Manual
+
         {
-            // for GNOME:
+
             {
                 actions << ProcessArgument{"gsettings", {"set", "org.gnome.system.proxy", "mode", "manual"}};
             }
 
-            // for KDE:
+
             if (isKDE) {
                 actions << ProcessArgument{"kwriteconfig5",
-                                           {"--file", configPath + "/kioslaverc", //
-                                            "--group", "Proxy Settings",          //
+                                           {"--file", configPath + "/kioslaverc",
+                                            "--group", "Proxy Settings",
                                             "--key", "ProxyType", "1"}};
             }
         }
 
-        // Notify kioslaves to reload system proxy configuration.
+
         if (isKDE) {
             actions << ProcessArgument{"dbus-send",
-                                       {"--type=signal", "/KIO/Scheduler",                 //
-                                        "org.kde.KIO.Scheduler.reparseSlaveConfiguration", //
+                                       {"--type=signal", "/KIO/Scheduler",
+                                        "org.kde.KIO.Scheduler.reparseSlaveConfiguration",
                                         "string:''"}};
         }
-        // Execute them all!
-        //
-        // note: do not use std::all_of / any_of / none_of,
-        // because those are short-circuit and cannot guarantee atomicity.
+
+
+
+
         QList<bool> results;
         for (const auto &action: actions) {
-            // execute and get the code
+
             const auto returnCode = QProcess::execute(action.first, action.second);
-            // print out the commands and result codes
+
             DEBUG(QStringLiteral("[%1] Program: %2, Args: %3").arg(returnCode).arg(action.first).arg(action.second.join(";")));
-            // give the code back
+
             results << (returnCode == QProcess::NormalExit);
         }
 
@@ -394,35 +394,35 @@ namespace Qv2ray::components::proxy {
                            qEnvironmentVariable("XDG_SESSION_DESKTOP") == "plasma";
         const auto configRoot = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
 
-        // Setting System Proxy Mode to: None
+
         {
-            // for GNOME:
+
             {
                 actions << ProcessArgument{"gsettings", {"set", "org.gnome.system.proxy", "mode", "none"}};
             }
 
-            // for KDE:
+
             if (isKDE) {
                 actions << ProcessArgument{"kwriteconfig5",
-                                           {"--file", configRoot + "/kioslaverc", //
-                                            "--group", "Proxy Settings",          //
+                                           {"--file", configRoot + "/kioslaverc",
+                                            "--group", "Proxy Settings",
                                             "--key", "ProxyType", "0"}};
             }
         }
 
-        // Notify kioslaves to reload system proxy configuration.
+
         if (isKDE) {
             actions << ProcessArgument{"dbus-send",
-                                       {"--type=signal", "/KIO/Scheduler",                 //
-                                        "org.kde.KIO.Scheduler.reparseSlaveConfiguration", //
+                                       {"--type=signal", "/KIO/Scheduler",
+                                        "org.kde.KIO.Scheduler.reparseSlaveConfiguration",
                                         "string:''"}};
         }
 
-        // Execute the Actions
+
         for (const auto &action: actions) {
-            // execute and get the code
+
             const auto returnCode = QProcess::execute(action.first, action.second);
-            // print out the commands and result codes
+
             DEBUG(QStringLiteral("[%1] Program: %2, Args: %3").arg(returnCode).arg(action.first).arg(action.second.join(";")));
         }
 
@@ -437,4 +437,4 @@ namespace Qv2ray::components::proxy {
 
 #endif
     }
-} // namespace Qv2ray::components::proxy
+}

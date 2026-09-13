@@ -18,7 +18,7 @@ namespace NekoGui_rpc {
 
         bool KeepAlive();
 
-        // QString returns is error string
+
 
         QString Start(bool *rpcOK, const libcore::LoadConfigReq &request);
 
@@ -39,5 +39,5 @@ namespace NekoGui_rpc {
     };
 
     inline Client *defaultClient;
-} // namespace NekoGui_rpc
+}
 #endif

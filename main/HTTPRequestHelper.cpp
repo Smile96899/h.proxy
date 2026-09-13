@@ -14,10 +14,10 @@ namespace NekoGui_network {
         QNetworkRequest request;
         QNetworkAccessManager accessManager;
         request.setUrl(url);
-        // Set proxy
+
         if (NekoGui::dataStore->sub_use_proxy) {
             QNetworkProxy p;
-            // Note: sing-box mixed socks5 protocol error
+
             p.setType(QNetworkProxy::HttpProxy);
             p.setHostName("127.0.0.1");
             p.setPort(NekoGui::dataStore->inbound_socks_port);
@@ -34,7 +34,7 @@ namespace NekoGui_network {
             auto cap = accessManager.proxy().capabilities();
             accessManager.proxy().setCapabilities(cap | QNetworkProxy::HostNameLookupCapability);
         }
-        // Set attribute
+
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 9, 0))
         request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
 #endif
@@ -44,7 +44,7 @@ namespace NekoGui_network {
             c.setPeerVerifyMode(QSslSocket::PeerVerifyMode::VerifyNone);
             request.setSslConfiguration(c);
         }
-        //
+
         auto _reply = accessManager.get(request);
         connect(_reply, &QNetworkReply::sslErrors, _reply, [](const QList<QSslError> &errors) {
             QStringList error_str;
@@ -53,7 +53,7 @@ namespace NekoGui_network {
             }
             MW_show_log(QStringLiteral("SSL Errors: %1 %2").arg(error_str.join(","), NekoGui::dataStore->sub_insecure ? "(Ignored)" : ""));
         });
-        // Wait for response
+
         auto abortTimer = new QTimer;
         abortTimer->setSingleShot(true);
         abortTimer->setInterval(10000);
@@ -68,7 +68,7 @@ namespace NekoGui_network {
             abortTimer->stop();
             abortTimer->deleteLater();
         }
-        //
+
         auto result = NekoHTTPResponse{_reply->error() == QNetworkReply::NetworkError::NoError ? "" : _reply->errorString(),
                                        _reply->readAll(), _reply->rawHeaderPairs()};
         _reply->deleteLater();
@@ -82,4 +82,4 @@ namespace NekoGui_network {
         return "";
     }
 
-} // namespace NekoGui_network
+}

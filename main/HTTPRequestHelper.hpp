@@ -26,6 +26,6 @@ namespace NekoGui_network {
 
         static QString GetHeader(const QList<QPair<QByteArray, QByteArray>> &header, const QString &name);
     };
-} // namespace NekoGui_network
+}
 
 using namespace NekoGui_network;

@@ -38,7 +38,7 @@ public:
         layout->addWidget(pushButton_pick);
         setLayout(layout);
         setContentsMargins(0, 0, 0, 0);
-        //
+
         connect(pushButton_pick, &QPushButton::clicked, this, [=] {
             auto fn = QFileDialog::getOpenFileName(this, QObject::tr("Select"), QDir::currentPath(),
                                                    "", nullptr, QFileDialog::Option::ReadOnly);
@@ -57,7 +57,7 @@ DialogBasicSettings::DialogBasicSettings(QWidget *parent)
     ui->setupUi(this);
     ADD_ASTERISK(this);
 
-    // Common
+
 
     ui->log_level->addItems(QStringLiteral("trace debug info warn error fatal panic").split(" "));
     ui->mux_protocol->addItems({"h2mux", "smux", "yamux"});
@@ -92,14 +92,14 @@ DialogBasicSettings::DialogBasicSettings(QWidget *parent)
     ui->sys_proxy_format->hide();
 #endif
 
-    // Style
+
     ui->connection_statistics_box->setDisabled(true);
-    //
+
     D_LOAD_BOOL(check_include_pre)
     D_LOAD_BOOL(connection_statistics)
     D_LOAD_BOOL(start_minimal)
     D_LOAD_INT(max_log_line)
-    //
+
     if (NekoGui::dataStore->traffic_loop_interval == 500) {
         ui->rfsh_r->setCurrentIndex(0);
     } else if (NekoGui::dataStore->traffic_loop_interval == 1000) {
@@ -113,15 +113,15 @@ DialogBasicSettings::DialogBasicSettings(QWidget *parent)
     } else {
         ui->rfsh_r->setCurrentIndex(5);
     }
-    //
+
     ui->language->setCurrentIndex(NekoGui::dataStore->language);
     connect(ui->language, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int index) {
         CACHE.needRestart = true;
     });
-    //
+
     int built_in_len = ui->theme->count();
     ui->theme->addItems(QStyleFactory::keys());
-    //
+
     bool ok;
     auto themeId = NekoGui::dataStore->theme.toInt(&ok);
     if (ok) {
@@ -129,7 +129,7 @@ DialogBasicSettings::DialogBasicSettings(QWidget *parent)
     } else {
         ui->theme->setCurrentText(NekoGui::dataStore->theme);
     }
-    //
+
     connect(ui->theme, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int index) {
         if (index + 1 <= built_in_len) {
             themeManager->ApplyTheme(Int2String(index));
@@ -143,7 +143,7 @@ DialogBasicSettings::DialogBasicSettings(QWidget *parent)
         NekoGui::dataStore->Save();
     });
 
-    // Subscription
+
 
     ui->user_agent->setText(NekoGui::dataStore->user_agent);
     ui->user_agent->setPlaceholderText(NekoGui::dataStore->GetUserAgent(true));
@@ -152,20 +152,20 @@ DialogBasicSettings::DialogBasicSettings(QWidget *parent)
     D_LOAD_BOOL(sub_insecure)
     D_LOAD_INT_ENABLE(sub_auto_update, sub_auto_update_enable)
 
-    // Core
+
 
     ui->groupBox_core->setTitle(software_core_name);
-    //
+
     CACHE.extraCore = QString2QJsonObject(NekoGui::dataStore->extraCore->core_map);
     if (!CACHE.extraCore.contains("naive")) CACHE.extraCore.insert("naive", "");
     if (!CACHE.extraCore.contains("hysteria2")) CACHE.extraCore.insert("hysteria2", "");
     if (!CACHE.extraCore.contains("tuic")) CACHE.extraCore.insert("tuic", "");
-    //
+
     auto extra_core_layout = ui->extra_core_box_scrollAreaWidgetContents->layout();
     for (const auto &s: CACHE.extraCore.keys()) {
         extra_core_layout->addWidget(new ExtraCoreWidget(&CACHE.extraCore, s));
     }
-    //
+
     connect(ui->extra_core_add, &QPushButton::clicked, this, [=] {
         bool ok;
         auto s = QInputDialog::getText(nullptr, tr("Add"),
@@ -194,13 +194,13 @@ DialogBasicSettings::DialogBasicSettings(QWidget *parent)
         }
     });
 
-    // Mux
+
     D_LOAD_INT(mux_concurrency)
     D_LOAD_COMBO_STRING(mux_protocol)
     D_LOAD_BOOL(mux_padding)
     D_LOAD_BOOL(mux_default_on)
 
-    // Security
+
 
     ui->utlsFingerprint->addItems(Preset::SingBox::UtlsFingerPrint);
 
@@ -213,7 +213,7 @@ DialogBasicSettings::~DialogBasicSettings() {
 }
 
 void DialogBasicSettings::accept() {
-    // Common
+
 
     D_SAVE_STRING(inbound_address)
     D_SAVE_COMBO_STRING(log_level)
@@ -225,7 +225,7 @@ void DialogBasicSettings::accept() {
     D_SAVE_STRING(test_download_url)
     D_SAVE_BOOL(old_share_link_format)
 
-    // Style
+
 
     NekoGui::dataStore->language = ui->language->currentIndex();
     D_SAVE_BOOL(connection_statistics)
@@ -251,7 +251,7 @@ void DialogBasicSettings::accept() {
         NekoGui::dataStore->traffic_loop_interval = 0;
     }
 
-    // Subscription
+
 
     if (ui->sub_auto_update_enable->isChecked()) {
         TM_auto_update_subsctiption_Reset_Minute(ui->sub_auto_update->text().toInt());
@@ -265,22 +265,22 @@ void DialogBasicSettings::accept() {
     D_SAVE_BOOL(sub_insecure)
     D_SAVE_INT_ENABLE(sub_auto_update, sub_auto_update_enable)
 
-    // Core
+
 
     NekoGui::dataStore->extraCore->core_map = QJsonObject2QString(CACHE.extraCore, true);
 
-    // Mux
+
     D_SAVE_INT(mux_concurrency)
     D_SAVE_COMBO_STRING(mux_protocol)
     D_SAVE_BOOL(mux_padding)
     D_SAVE_BOOL(mux_default_on)
 
-    // Security
+
 
     D_SAVE_BOOL(skip_cert)
     NekoGui::dataStore->utlsFingerprint = ui->utlsFingerprint->currentText();
 
-    // 关闭连接统计，停止刷新前清空记录。
+
     if (NekoGui::dataStore->traffic_loop_interval == 0 || !NekoGui::dataStore->connection_statistics) {
         MW_dialog_message("", "ClearConnectionList");
     }
@@ -291,7 +291,7 @@ void DialogBasicSettings::accept() {
     QDialog::accept();
 }
 
-// slots
+
 
 void DialogBasicSettings::refresh_auth() {
     ui->inbound_auth->setText({});
@@ -330,14 +330,14 @@ void DialogBasicSettings::on_inbound_auth_clicked() {
     w->setWindowTitle(tr("Inbound Auth"));
     auto layout = new QGridLayout;
     w->setLayout(layout);
-    //
+
     auto user_l = new QLabel(tr("Username"));
     auto pass_l = new QLabel(tr("Password"));
     auto user = new MyLineEdit;
     auto pass = new MyLineEdit;
     user->setText(NekoGui::dataStore->inbound_auth->username);
     pass->setText(NekoGui::dataStore->inbound_auth->password);
-    //
+
     layout->addWidget(user_l, 0, 0);
     layout->addWidget(user, 0, 1);
     layout->addWidget(pass_l, 1, 0);
@@ -353,7 +353,7 @@ void DialogBasicSettings::on_inbound_auth_clicked() {
     });
     connect(box, &QDialogButtonBox::rejected, w, &QDialog::reject);
     layout->addWidget(box, 2, 1);
-    //
+
     w->exec();
     w->deleteLater();
     refresh_auth();
@@ -364,38 +364,38 @@ void DialogBasicSettings::on_core_settings_clicked() {
     w->setWindowTitle(software_core_name + " Core Options");
     auto layout = new QGridLayout;
     w->setLayout(layout);
-    //
+
     auto line = -1;
     QCheckBox *core_box_enable_clash_api;
     MyLineEdit *core_box_clash_api;
     MyLineEdit *core_box_clash_api_secret;
     MyLineEdit *core_box_underlying_dns;
-    //
+
     auto core_box_underlying_dns_l = new QLabel(tr("Override underlying DNS"));
     core_box_underlying_dns = new MyLineEdit;
     core_box_underlying_dns->setText(NekoGui::dataStore->core_box_underlying_dns);
     core_box_underlying_dns->setMinimumWidth(300);
     layout->addWidget(core_box_underlying_dns_l, ++line, 0);
     layout->addWidget(core_box_underlying_dns, line, 1);
-    //
+
     auto core_box_enable_clash_api_l = new QLabel("Enable Clash API");
     core_box_enable_clash_api = new QCheckBox;
     core_box_enable_clash_api->setChecked(NekoGui::dataStore->core_box_clash_api > 0);
     layout->addWidget(core_box_enable_clash_api_l, ++line, 0);
     layout->addWidget(core_box_enable_clash_api, line, 1);
-    //
+
     auto core_box_clash_api_l = new QLabel("Clash API Listen Port");
     core_box_clash_api = new MyLineEdit;
     core_box_clash_api->setText(Int2String(std::abs(NekoGui::dataStore->core_box_clash_api)));
     layout->addWidget(core_box_clash_api_l, ++line, 0);
     layout->addWidget(core_box_clash_api, line, 1);
-    //
+
     auto core_box_clash_api_secret_l = new QLabel("Clash API Secret");
     core_box_clash_api_secret = new MyLineEdit;
     core_box_clash_api_secret->setText(NekoGui::dataStore->core_box_clash_api_secret);
     layout->addWidget(core_box_clash_api_secret_l, ++line, 0);
     layout->addWidget(core_box_clash_api_secret, line, 1);
-    //
+
     auto box = new QDialogButtonBox;
     box->setOrientation(Qt::Horizontal);
     box->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
@@ -408,7 +408,7 @@ void DialogBasicSettings::on_core_settings_clicked() {
     });
     connect(box, &QDialogButtonBox::rejected, w, &QDialog::reject);
     layout->addWidget(box, ++line, 1);
-    //
+
     ADD_ASTERISK(w)
     w->exec();
     w->deleteLater();

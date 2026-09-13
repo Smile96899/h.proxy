@@ -22,24 +22,24 @@ DialogManageRoutes::DialogManageRoutes(QWidget *parent) : QDialog(parent), ui(ne
 
     QStringList qsValue = {""};
     QString dnsHelpDocumentUrl;
-    //
+
     ui->outbound_domain_strategy->addItems(Preset::SingBox::DomainStrategy);
     ui->domainStrategyCombo->addItems(Preset::SingBox::DomainStrategy);
     qsValue += QStringLiteral("prefer_ipv4 prefer_ipv6 ipv4_only ipv6_only").split(" ");
     ui->dns_object->setPlaceholderText(DecodeB64IfValid("ewogICJzZXJ2ZXJzIjogW10sCiAgInJ1bGVzIjogW10sCiAgImZpbmFsIjogIiIsCiAgInN0cmF0ZWd5IjogIiIsCiAgImRpc2FibGVfY2FjaGUiOiBmYWxzZSwKICAiZGlzYWJsZV9leHBpcmUiOiBmYWxzZSwKICAiaW5kZXBlbmRlbnRfY2FjaGUiOiBmYWxzZSwKICAicmV2ZXJzZV9tYXBwaW5nIjogZmFsc2UsCiAgImZha2VpcCI6IHt9Cn0="));
     dnsHelpDocumentUrl = "https://sing-box.sagernet.org/configuration/dns/";
-    //
+
     ui->direct_dns_strategy->addItems(qsValue);
     ui->remote_dns_strategy->addItems(qsValue);
-    //
+
     D_C_LOAD_STRING(custom_route_global)
-    //
+
     connect(ui->use_dns_object, &QCheckBox::stateChanged, this, [=](int state) {
         auto useDNSObject = state == Qt::Checked;
         ui->simple_dns_box->setDisabled(useDNSObject);
         ui->dns_object->setDisabled(!useDNSObject);
     });
-    ui->use_dns_object->stateChanged(Qt::Unchecked); // uncheck to uncheck
+    ui->use_dns_object->stateChanged(Qt::Unchecked);
     connect(ui->dns_document, &QPushButton::clicked, this, [=] {
         MessageBoxInfo("DNS", dnsHelpDocumentUrl);
     });
@@ -51,39 +51,39 @@ DialogManageRoutes::DialogManageRoutes(QWidget *parent) : QDialog(parent), ui(ne
             ui->dns_object->setPlainText(QJsonObject2QString(obj, false));
         }
     });
-    //
+
     connect(ui->custom_route_edit, &QPushButton::clicked, this, [=] {
         C_EDIT_JSON_ALLOW_EMPTY(custom_route)
     });
     connect(ui->custom_route_global_edit, &QPushButton::clicked, this, [=] {
         C_EDIT_JSON_ALLOW_EMPTY(custom_route_global)
     });
-    //
+
     builtInSchemesMenu = new QMenu(this);
     builtInSchemesMenu->addActions(this->getBuiltInSchemes());
     ui->preset->setMenu(builtInSchemesMenu);
 
     QString geoipFn = NekoGui::FindCoreAsset("geoip.dat");
     QString geositeFn = NekoGui::FindCoreAsset("geosite.dat");
-    //
+
     const auto sourceStringsDomain = Qv2ray::components::GeositeReader::ReadGeoSiteFromFile(geositeFn);
     directDomainTxt = new AutoCompleteTextEdit("geosite", sourceStringsDomain, this);
     proxyDomainTxt = new AutoCompleteTextEdit("geosite", sourceStringsDomain, this);
     blockDomainTxt = new AutoCompleteTextEdit("geosite", sourceStringsDomain, this);
-    //
+
     const auto sourceStringsIP = Qv2ray::components::GeositeReader::ReadGeoSiteFromFile(geoipFn);
     directIPTxt = new AutoCompleteTextEdit("geoip", sourceStringsIP, this);
     proxyIPTxt = new AutoCompleteTextEdit("geoip", sourceStringsIP, this);
     blockIPTxt = new AutoCompleteTextEdit("geoip", sourceStringsIP, this);
-    //
+
     ui->directTxtLayout->addWidget(directDomainTxt, 0, 0);
     ui->proxyTxtLayout->addWidget(proxyDomainTxt, 0, 0);
     ui->blockTxtLayout->addWidget(blockDomainTxt, 0, 0);
-    //
+
     ui->directIPLayout->addWidget(directIPTxt, 0, 0);
     ui->proxyIPLayout->addWidget(proxyIPTxt, 0, 0);
     ui->blockIPLayout->addWidget(blockIPTxt, 0, 0);
-    //
+
     REFRESH_ACTIVE_ROUTING(NekoGui::dataStore->active_routing, NekoGui::dataStore->routing.get())
 
     ADD_ASTERISK(this)
@@ -101,14 +101,14 @@ void DialogManageRoutes::accept() {
     NekoGui::dataStore->active_routing = active_routing;
     NekoGui::dataStore->routing->fn = ROUTES_PREFIX + NekoGui::dataStore->active_routing;
     if (NekoGui::dataStore->routing->Save()) routeChanged = true;
-    //
+
     QString info = "UpdateDataStore";
     if (routeChanged) info += "RouteChanged";
     MW_dialog_message(Dialog_DialogManageRoutes, info);
     QDialog::accept();
 }
 
-// built in settings
+
 
 QList<QAction *> DialogManageRoutes::getBuiltInSchemes() {
     QList<QAction *> list;
@@ -124,20 +124,20 @@ QAction *DialogManageRoutes::schemeToAction(const QString &name, const NekoGui::
 }
 
 void DialogManageRoutes::UpdateDisplayRouting(NekoGui::Routing *conf, bool qv) {
-    //
+
     directDomainTxt->setPlainText(conf->direct_domain);
     proxyDomainTxt->setPlainText(conf->proxy_domain);
     blockDomainTxt->setPlainText(conf->block_domain);
-    //
+
     blockIPTxt->setPlainText(conf->block_ip);
     directIPTxt->setPlainText(conf->direct_ip);
     proxyIPTxt->setPlainText(conf->proxy_ip);
-    //
+
     CACHE.custom_route = conf->custom;
     ui->def_outbound->setCurrentText(conf->def_outbound);
-    //
+
     if (qv) return;
-    //
+
     ui->sniffing_mode->setCurrentIndex(conf->sniffing_mode);
     ui->outbound_domain_strategy->setCurrentText(conf->outbound_domain_strategy);
     ui->domainStrategyCombo->setCurrentText(conf->domain_strategy);
@@ -160,7 +160,7 @@ void DialogManageRoutes::SaveDisplayRouting(NekoGui::Routing *conf) {
     conf->block_domain = blockDomainTxt->toPlainText();
     conf->def_outbound = ui->def_outbound->currentText();
     conf->custom = CACHE.custom_route;
-    //
+
     conf->sniffing_mode = ui->sniffing_mode->currentIndex();
     conf->domain_strategy = ui->domainStrategyCombo->currentText();
     conf->outbound_domain_strategy = ui->outbound_domain_strategy->currentText();
@@ -208,7 +208,7 @@ void DialogManageRoutes::on_load_save_clicked() {
             r->fn = ROUTES_PREFIX + fn;
             if (r->Load()) {
                 if (QMessageBox::question(nullptr, software_name, tr("Load routing: %1").arg(fn) + "\n" + r->DisplayRouting()) == QMessageBox::Yes) {
-                    REFRESH_ACTIVE_ROUTING(fn, r.get()) // temp save to the window
+                    REFRESH_ACTIVE_ROUTING(fn, r.get())
                     w->accept();
                 }
             }

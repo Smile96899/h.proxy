@@ -20,10 +20,10 @@
     auto TempFile = QFileInfo(f).absoluteFilePath();
 
 namespace NekoGui_fmt {
-    // -1: Cannot use this config
-    // 0: Internal
-    // 1: Mapping External
-    // 2: Direct External
+
+
+
+
 
     int NaiveBean::NeedExternal(bool isFirstProfile) {
         if (isFirstProfile) {
@@ -51,10 +51,10 @@ namespace NekoGui_fmt {
         };
 
         if (!forceExternal) {
-            // sing-box support
+
             return 0;
         } else {
-            // external core support
+
             return extCore();
         }
     }
@@ -122,7 +122,7 @@ namespace NekoGui_fmt {
                 relay["certificates"] = certificate;
             }
 
-            // The most confused part of TUIC......
+
             if (serverAddress == sni) {
                 relay["server"] = serverAddress + ":" + Int2String(serverPort);
             } else {
@@ -139,7 +139,7 @@ namespace NekoGui_fmt {
                 {"local", local},
             };
 
-            //
+
 
             result.config_export = QJsonObject2QString(config, false);
             WriteTempFile("tuic_" + GetRandomString(10) + ".json", result.config_export.toUtf8());
@@ -223,7 +223,7 @@ namespace NekoGui_fmt {
     ExternalBuildResult CustomBean::BuildExternal(int mapping_port, int socks_port, int external_stat) {
         ExternalBuildResult result{NekoGui::dataStore->extraCore->Get(core)};
 
-        result.arguments = command; // TODO split?
+        result.arguments = command;
 
         for (int i = 0; i < result.arguments.length(); i++) {
             auto arg = result.arguments[i];
@@ -241,16 +241,16 @@ namespace NekoGui_fmt {
             config = config.replace("%server_addr%", serverAddress);
             config = config.replace("%server_port%", Int2String(serverPort));
 
-            // suffix
+
             QString suffix;
             if (!config_suffix.isEmpty()) {
                 suffix = "." + config_suffix;
             } else if (!QString2QJsonObject(config).isEmpty()) {
-                // trojan-go: unsupported config format: xxx.tmp. use .yaml or .json instead.
+
                 suffix = ".json";
             }
 
-            // write config
+
             WriteTempFile("custom_" + GetRandomString(10) + suffix, config.toUtf8());
             for (int i = 0; i < result.arguments.count(); i++) {
                 result.arguments[i] = result.arguments[i].replace("%config%", TempFile);
@@ -262,4 +262,4 @@ namespace NekoGui_fmt {
         return result;
     }
 
-} // namespace NekoGui_fmt
+}

@@ -63,4 +63,4 @@ private:
     void do_apply_to_group(const std::shared_ptr<NekoGui::Group> &group, QWidget *key);
 };
 
-#endif // DIALOG_EDIT_PROFILE_H
+#endif

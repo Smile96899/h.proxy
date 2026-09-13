@@ -3,13 +3,13 @@
 
 namespace NekoGui_fmt {
     void V2rayStreamSettings::BuildStreamSettingsSingBox(QJsonObject *outbound) {
-        // https://sing-box.sagernet.org/configuration/shared/v2ray-transport
+
 
         if (network != "tcp") {
             QJsonObject transport{{"type", network}};
             if (network == "ws") {
                 if (!host.isEmpty()) transport["headers"] = QJsonObject{{"Host", host}};
-                // ws path & ed
+
                 auto pathWithoutEd = SubStrBefore(path, "?ed=");
                 if (!pathWithoutEd.isEmpty()) transport["path"] = pathWithoutEd;
                 if (pathWithoutEd != path) {
@@ -34,7 +34,7 @@ namespace NekoGui_fmt {
             }
             outbound->insert("transport", transport);
         } else if (header_type == "http") {
-            // TCP + headerType
+
             QJsonObject transport{
                 {"type", "http"},
                 {"method", "GET"},
@@ -44,7 +44,7 @@ namespace NekoGui_fmt {
             outbound->insert("transport", transport);
         }
 
-        // 对应字段 tls
+
         if (security == "tls") {
             QJsonObject tls{{"enabled", true}};
             if (allow_insecure || NekoGui::dataStore->skip_cert) tls["insecure"] = true;
@@ -155,10 +155,10 @@ namespace NekoGui_fmt {
         QJsonObject settings;
         if (proxy_type == proxy_VLESS) {
             if (flow.right(7) == "-udp443") {
-                // 检查末尾是否包含"-udp443"，如果是，则删去
+
                 flow.chop(7);
             } else if (flow == "none") {
-                // 不使用 flow
+
                 flow = "";
             }
             outbound["uuid"] = password.trimmed();
@@ -234,4 +234,4 @@ namespace NekoGui_fmt {
 
         return result;
     }
-} // namespace NekoGui_fmt
+}

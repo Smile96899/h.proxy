@@ -3,13 +3,13 @@
 #include <future>
 #include <QThread>
 
-// FOR OLD QT
+
 
 class QThreadCreateThread : public QThread {
 public:
     explicit QThreadCreateThread(std::future<void> &&future)
             : m_future(std::move(future)) {
-        // deleteLater
+
         connect(this, &QThread::finished, this, &QThread::deleteLater);
     }
 

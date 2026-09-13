@@ -23,15 +23,15 @@
 
 DialogEditProfile::DialogEditProfile(const QString &_type, int profileOrGroupId, QWidget *parent)
     : QDialog(parent), ui(new Ui::DialogEditProfile) {
-    // setup UI
+
     ui->setupUi(this);
     ui->dialog_layout->setAlignment(ui->left, Qt::AlignTop);
 
-    // network changed
+
     network_title_base = ui->network_box->title();
     connect(ui->network, &QComboBox::currentTextChanged, this, [=](const QString &txt) {
         ui->network_box->setTitle(network_title_base.arg(txt));
-        // 传输设置
+
         if (txt == "tcp") {
             ui->header_type->setVisible(true);
             ui->header_type_l->setVisible(true);
@@ -61,7 +61,7 @@ DialogEditProfile::DialogEditProfile(const QString &_type, int profileOrGroupId,
             ui->host->setVisible(false);
             ui->host_l->setVisible(false);
         }
-        // 传输设置 ED
+
         if (txt == "ws") {
             ui->ws_early_data_length->setVisible(true);
             ui->ws_early_data_length_l->setVisible(true);
@@ -73,9 +73,9 @@ DialogEditProfile::DialogEditProfile(const QString &_type, int profileOrGroupId,
             ui->ws_early_data_name->setVisible(false);
             ui->ws_early_data_name_l->setVisible(false);
         }
-        // 传输设置 for NekoBox
+
         if (!ui->utlsFingerprint->count()) ui->utlsFingerprint->addItems(Preset::SingBox::UtlsFingerPrint);
-        // 传输设置 是否可见
+
         int networkBoxVisible = 0;
         for (auto label: ui->network_box->findChildren<QLabel *>()) {
             if (!label->isHidden()) networkBoxVisible++;
@@ -85,7 +85,7 @@ DialogEditProfile::DialogEditProfile(const QString &_type, int profileOrGroupId,
     });
     ui->network->removeItem(0);
 
-    // security changed
+
     connect(ui->security, &QComboBox::currentTextChanged, this, [=](const QString &txt) {
         if (txt == "tls") {
             ui->security_box->setVisible(true);
@@ -100,13 +100,13 @@ DialogEditProfile::DialogEditProfile(const QString &_type, int profileOrGroupId,
     });
     emit ui->security->currentTextChanged(ui->security->currentText());
 
-    // 确定模式和 ent
+
     newEnt = _type != "";
     if (newEnt) {
         this->groupId = profileOrGroupId;
         this->type = _type;
 
-        // load type to combo box
+
         LOAD_TYPE("socks")
         LOAD_TYPE("http")
         LOAD_TYPE("shadowsocks")
@@ -121,7 +121,7 @@ DialogEditProfile::DialogEditProfile(const QString &_type, int profileOrGroupId,
         ui->type->addItem(tr("Custom (Extra Core)"), "custom");
         LOAD_TYPE("chain")
 
-        // type changed
+
         connect(ui->type, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int index) {
             typeSelected(ui->type->itemData(index).toString());
         });
@@ -196,14 +196,14 @@ void DialogEditProfile::typeSelected(const QString &newType) {
         this->ent->gid = groupId;
     }
 
-    // hide some widget
+
     auto showAddressPort = type != "chain" && customType != "internal" && customType != "internal-full";
     ui->address->setVisible(showAddressPort);
     ui->address_l->setVisible(showAddressPort);
     ui->port->setVisible(showAddressPort);
     ui->port_l->setVisible(showAddressPort);
 
-    // 右边 stream
+
     auto stream = GetStreamSettings(ent->bean.get());
     if (stream != nullptr) {
         ui->right_all_w->setVisible(true);
@@ -231,7 +231,7 @@ void DialogEditProfile::typeSelected(const QString &newType) {
         ui->right_all_w->setVisible(false);
     }
 
-    // left: custom
+
     CACHE.custom_config = ent->bean->custom_config;
     CACHE.custom_outbound = ent->bean->custom_outbound;
     bool show_custom_config = true;
@@ -249,7 +249,7 @@ void DialogEditProfile::typeSelected(const QString &newType) {
     ui->custom_box->setVisible(show_custom_outbound);
     ui->custom_global_box->setVisible(show_custom_config);
 
-    // 左边 bean
+
     auto old = ui->bean->layout()->itemAt(0)->widget();
     ui->bean->layout()->removeWidget(old);
     innerWidget->layout()->setContentsMargins(0, 0, 0, 0);
@@ -257,7 +257,7 @@ void DialogEditProfile::typeSelected(const QString &newType) {
     ui->bean->setTitle(ent->bean->DisplayType());
     delete old;
 
-    // 左边 bean inner editor
+
     innerEditor->get_edit_dialog = [&]() { return (QWidget *) this; };
     innerEditor->get_edit_text_name = [&]() { return ui->name->text(); };
     innerEditor->get_edit_text_serverAddress = [&]() { return ui->address->text(); };
@@ -265,16 +265,16 @@ void DialogEditProfile::typeSelected(const QString &newType) {
     innerEditor->editor_cache_updated = [=] { editor_cache_updated_impl(); };
     innerEditor->onStart(ent);
 
-    // 左边 common
+
     ui->name->setText(ent->bean->name);
     ui->address->setText(ent->bean->serverAddress);
     ui->port->setText(Int2String(ent->bean->serverPort));
     ui->port->setValidator(QRegExpValidator_Number);
 
-    // 星号
+
     ADD_ASTERISK(this)
 
-    // 设置 for NekoBox
+
     if (type == "vmess" || type == "vless") {
         ui->packet_encoding->setVisible(true);
         ui->packet_encoding_l->setVisible(true);
@@ -306,14 +306,14 @@ void DialogEditProfile::typeSelected(const QString &newType) {
         ui->multiplex_l->setVisible(false);
     }
 
-    // 设置 是否可见
+
     int streamBoxVisible = 0;
     for (auto label: ui->stream_box->findChildren<QLabel *>()) {
         if (!label->isHidden()) streamBoxVisible++;
     }
     ui->stream_box->setVisible(streamBoxVisible);
 
-    // 载入 type 之后，有些类型没有右边的设置
+
     auto rightNoBox = (ui->stream_box->isHidden() && ui->network_box->isHidden() && ui->security_box->isHidden());
     if (rightNoBox && !ui->right_all_w->isHidden()) {
         ui->right_all_w->setVisible(false);
@@ -322,24 +322,24 @@ void DialogEditProfile::typeSelected(const QString &newType) {
     editor_cache_updated_impl();
     ADJUST_SIZE
 
-    // 第一次显示
+
     if (isHidden()) {
         runOnUiThread([=] { show(); }, this);
     }
 }
 
 bool DialogEditProfile::onEnd() {
-    // bean
+
     if (!innerEditor->onEnd()) {
         return false;
     }
 
-    // 左边
+
     ent->bean->name = ui->name->text();
     ent->bean->serverAddress = ui->address->text().remove(' ');
     ent->bean->serverPort = ui->port->text().toInt();
 
-    // 右边 stream
+
     auto stream = GetStreamSettings(ent->bean.get());
     if (stream != nullptr) {
         stream->network = ui->network->currentText();
@@ -360,7 +360,7 @@ bool DialogEditProfile::onEnd() {
         stream->certificate = CACHE.certificate;
     }
 
-    // cached custom
+
     ent->bean->custom_outbound = CACHE.custom_outbound;
     ent->bean->custom_config = CACHE.custom_config;
 
@@ -368,12 +368,12 @@ bool DialogEditProfile::onEnd() {
 }
 
 void DialogEditProfile::accept() {
-    // save to ent
+
     if (!onEnd()) {
         return;
     }
 
-    // finish
+
     QStringList msg = {"accept"};
 
     if (newEnt) {
@@ -390,7 +390,7 @@ void DialogEditProfile::accept() {
     QDialog::accept();
 }
 
-// cached editor (dialog)
+
 
 void DialogEditProfile::editor_cache_updated_impl() {
     if (CACHE.certificate.isEmpty()) {
@@ -409,7 +409,7 @@ void DialogEditProfile::editor_cache_updated_impl() {
         ui->custom_config_edit->setText(tr("Already set"));
     }
 
-    // CACHE macro
+
     for (auto a: innerEditor->get_editor_cached()) {
         if (a.second.isEmpty()) {
             a.first->setText(tr("Not set"));
@@ -457,14 +457,14 @@ void DialogEditProfile::on_apply_to_group_clicked() {
             MessageBoxWarning("failed", "unknown group");
             return;
         }
-        // save this
+
         if (onEnd()) {
             ent->Save();
         } else {
             MessageBoxWarning("failed", "failed to save");
             return;
         }
-        // copy keys
+
         for (const auto &pair: apply_to_group_ui) {
             if (pair.second->isChecked()) {
                 do_apply_to_group(group, pair.first);
@@ -485,7 +485,7 @@ void DialogEditProfile::do_apply_to_group(const std::shared_ptr<NekoGui::Group> 
             if (newStream == nullptr) continue;
             if (stream == newStream) continue;
             newStream->_setValue(stream->_name(p), p);
-            // qDebug() << newStream->ToJsonBytes();
+
             profile->Save();
         }
     };
@@ -494,7 +494,7 @@ void DialogEditProfile::do_apply_to_group(const std::shared_ptr<NekoGui::Group> 
         for (const auto &profile: group->Profiles()) {
             if (profile == ent) continue;
             profile->bean->_setValue(ent->bean->_name(p), p);
-            // qDebug() << profile->bean->ToJsonBytes();
+
             profile->Save();
         }
     };

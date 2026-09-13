@@ -5,7 +5,7 @@
 namespace NekoGui_fmt {
     class ChainBean : public AbstractBean {
     public:
-        QList<int> list; // in to out
+        QList<int> list;
 
         ChainBean() : AbstractBean(0) {
             _add(new configItem("list", &list, itemType::integerList));
@@ -15,4 +15,4 @@ namespace NekoGui_fmt {
 
         QString DisplayAddress() override { return ""; };
     };
-} // namespace NekoGui_fmt
+}

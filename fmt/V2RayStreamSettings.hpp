@@ -8,25 +8,25 @@ namespace NekoGui_fmt {
         QString network = "tcp";
         QString security = "";
         QString packet_encoding = "";
-        // ws/http/grpc/tcp-http/httpupgrade
+
         QString path = "";
         QString host = "";
-        // kcp/quic/tcp-http
+
         QString header_type = "";
-        // tls
+
         QString sni = "";
         QString alpn = "";
         QString certificate = "";
         QString utlsFingerprint = "";
         bool allow_insecure = false;
-        // ws early data
+
         QString ws_early_data_name = "";
         int ws_early_data_length = 0;
-        // reality
+
         QString reality_pbk = "";
         QString reality_sid = "";
         QString reality_spx = "";
-        // multiplex
+
         int multiplex_status = 0;
 
         V2rayStreamSettings() : JsonStore() {
@@ -62,4 +62,4 @@ namespace NekoGui_fmt {
         }
         return nullptr;
     }
-} // namespace NekoGui_fmt
+}

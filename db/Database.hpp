@@ -7,19 +7,19 @@
 namespace NekoGui {
     class ProfileManager : private JsonStore {
     public:
-        // JsonStore
 
-        // order -> id
+
+
         QList<int> groupsTabOrder;
 
-        // Manager
+
 
         std::map<int, std::shared_ptr<ProxyEntity>> profiles;
         std::map<int, std::shared_ptr<Group>> groups;
 
         ProfileManager();
 
-        // LoadManager Reset and loads profiles & groups
+
         void LoadManager();
 
         void SaveManager();
@@ -45,7 +45,7 @@ namespace NekoGui {
         std::shared_ptr<Group> CurrentGroup();
 
     private:
-        // sort by id
+
         QList<int> profilesIdOrder;
         QList<int> groupsIdOrder;
 
@@ -59,4 +59,4 @@ namespace NekoGui {
     };
 
     extern ProfileManager *profileManager;
-} // namespace NekoGui
+}

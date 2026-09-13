@@ -21,7 +21,7 @@ void ThemeManager::ApplyTheme(const QString &theme) {
         auto themeId = theme.toInt(&ok);
 
         if (ok) {
-            // System & Built-in
+
             QString qss;
 
             if (themeId != 0) {
@@ -52,23 +52,23 @@ void ThemeManager::ApplyTheme(const QString &theme) {
             auto system_style = QStyleFactory::create(this->system_style_name);
 
             if (themeId == 0) {
-                // system theme
+
                 qApp->setPalette(system_style->standardPalette());
                 qApp->setStyle(system_style);
                 qApp->setStyleSheet("");
             } else {
                 if (themeId == 1 || themeId == 2 || themeId == 3) {
-                    // feiyangqingyun theme
+
                     QString paletteColor = qss.mid(20, 7);
                     qApp->setPalette(QPalette(paletteColor));
                 } else {
-                    // other theme
+
                     qApp->setPalette(system_style->standardPalette());
                 }
                 qApp->setStyleSheet(qss);
             }
         } else {
-            // QStyleFactory
+
             const auto &_style = QStyleFactory::create(theme);
             if (_style != nullptr) {
                 qApp->setPalette(_style->standardPalette());

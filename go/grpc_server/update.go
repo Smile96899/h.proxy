@@ -21,7 +21,7 @@ func (s *BaseServer) Update(ctx context.Context, in *gen.UpdateReq) (*gen.Update
 
 	client := neko_common.CreateProxyHttpClient(neko_common.GetCurrentInstance())
 
-	if in.Action == gen.UpdateAction_Check { // Check update
+	if in.Action == gen.UpdateAction_Check {
 		ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 		defer cancel()
 
@@ -66,7 +66,7 @@ func (s *BaseServer) Update(ctx context.Context, in *gen.UpdateReq) (*gen.Update
 			if len(release.Assets) > 0 {
 				for _, asset := range release.Assets {
 					if strings.Contains(asset.Name, nowVer) {
-						return ret, nil // No update
+						return ret, nil
 					}
 					if strings.Contains(asset.Name, search) {
 						if release.Prerelease && !in.CheckPreRelease {
@@ -78,12 +78,12 @@ func (s *BaseServer) Update(ctx context.Context, in *gen.UpdateReq) (*gen.Update
 						ret.ReleaseUrl = release.HtmlUrl
 						ret.ReleaseNote = release.Body
 						ret.IsPreRelease = release.Prerelease
-						return ret, nil // update
+						return ret, nil
 					}
 				}
 			}
 		}
-	} else { // Download update
+	} else {
 		if update_download_url == "" {
 			ret.Error = "?"
 			return ret, nil

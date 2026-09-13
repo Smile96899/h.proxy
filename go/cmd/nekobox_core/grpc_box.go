@@ -47,9 +47,9 @@ func (s *server) Start(ctx context.Context, in *gen.LoadConfigReq) (out *gen.Err
 	instance, instance_cancel, err = boxmain.Create([]byte(in.CoreConfig))
 
 	if instance != nil {
-		// Logger
+
 		instance.SetLogWritter(neko_log.LogWriter)
-		// V2ray Service
+
 		if in.StatsOutbounds != nil {
 			instance.Router().SetV2RayServer(boxapi.NewSbV2rayServer(option.V2RayStatsServiceOptions{
 				Enabled:   true,
@@ -97,7 +97,7 @@ func (s *server) Test(ctx context.Context, in *gen.TestReq) (out *gen.TestResp, 
 		var i *box.Box
 		var cancel context.CancelFunc
 		if in.Config != nil {
-			// Test instance
+
 			i, cancel, err = boxmain.Create([]byte(in.Config.CoreConfig))
 			if i != nil {
 				defer i.Close()
@@ -107,13 +107,13 @@ func (s *server) Test(ctx context.Context, in *gen.TestReq) (out *gen.TestResp, 
 				return
 			}
 		} else {
-			// Test running instance
+
 			i = instance
 			if i == nil {
 				return
 			}
 		}
-		// Latency
+
 		out.Ms, err = speedtest.UrlTest(boxapi.CreateProxyHttpClient(i), in.Url, in.Timeout, speedtest.UrlTestStandard_RTT)
 	} else if in.Mode == gen.TestMode_TcpPing {
 		out.Ms, err = speedtest.TcpPing(in.Address, in.Timeout)
@@ -146,7 +146,7 @@ func (s *server) QueryStats(ctx context.Context, in *gen.QueryStatsReq) (out *ge
 
 func (s *server) ListConnections(ctx context.Context, in *gen.EmptyReq) (*gen.ListConnectionsResp, error) {
 	out := &gen.ListConnectionsResp{
-		// TODO upstream api
+
 	}
 	return out, nil
 }

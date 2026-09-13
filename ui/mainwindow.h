@@ -140,19 +140,19 @@ private:
     QSystemTrayIcon *tray;
     QShortcut *shortcut_ctrl_f = new QShortcut(QKeySequence("Ctrl+F"), this);
     QShortcut *shortcut_esc = new QShortcut(QKeySequence("Esc"), this);
-    //
+
     NekoGui_sys::CoreProcess *core_process;
     qint64 vpn_pid = 0;
-    //
+
     bool qvLogAutoScoll = true;
     QTextDocument *qvLogDocument = new QTextDocument(this);
-    //
+
     QString title_error;
     int icon_status = -1;
     std::shared_ptr<NekoGui::ProxyEntity> running;
     QString traffic_update_cache;
     QTime last_test_time;
-    //
+
     int proxy_last_order = -1;
     bool select_mode = false;
     QMutex mu_starting;
@@ -175,13 +175,13 @@ private:
 
     void closeEvent(QCloseEvent *event) override;
 
-    //
+
 
     void HotkeyEvent(const QString &key);
 
     bool StartVPNProcess();
 
-    // grpc and ...
+
 
     static void setup_grpc();
 
@@ -196,7 +196,7 @@ private:
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
-#endif // MW_INTERFACE
+#endif
 };
 
 inline MainWindow *GetMainWindow() {

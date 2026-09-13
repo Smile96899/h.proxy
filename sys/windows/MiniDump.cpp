@@ -30,10 +30,10 @@ LONG __stdcall CreateCrashHandler(EXCEPTION_POINTERS *pException) {
     if (DllHandle) {
         MINIDUMPWRITEDUMP Dump = (MINIDUMPWRITEDUMP) GetProcAddress(DllHandle, "MiniDumpWriteDump");
         if (Dump) {
-            // 创建 Dump 文件
+
             QDateTime CurDTime = QDateTime::currentDateTime();
             QString current_date = CurDTime.toString("yyyy_MM_dd_hh_mm_ss");
-            // dmp文件的命名
+
             QString dumpText = "Dump_" + current_date + ".dmp";
             EXCEPTION_RECORD *record = pException->ExceptionRecord;
             QString errCode(QString::number(record->ExceptionCode, 16));
@@ -47,14 +47,14 @@ LONG __stdcall CreateCrashHandler(EXCEPTION_POINTERS *pException) {
                 dumpInfo.ExceptionPointers = pException;
                 dumpInfo.ThreadId = GetCurrentThreadId();
                 dumpInfo.ClientPointers = TRUE;
-                // 将dump信息写入dmp文件
+
                 Dump(GetCurrentProcess(), GetCurrentProcessId(), DumpHandle, MiniDumpNormal, &dumpInfo,
                      NULL, NULL);
                 CloseHandle(DumpHandle);
             } else {
                 dumpText = "";
             }
-            // 创建消息提示
+
             QMessageBox::warning(NULL, "Application crashed",
                                  QStringLiteral("ErrorCode: %1 ErrorAddr:%2 ErrorFlag: %3 ErrorPara: %4\nVersion: %5\nDump file at %6")
                                      .arg(errCode)

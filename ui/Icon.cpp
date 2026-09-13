@@ -7,15 +7,15 @@
 QPixmap Icon::GetTrayIcon(Icon::TrayIconStatus status) {
     QPixmap pixmap;
 
-    // software embedded icon
+
     auto pixmap_read = QPixmap(":/neko/h.png");
     if (!pixmap_read.isNull()) pixmap = pixmap_read;
 
-    // software pack icon
+
     pixmap_read = QPixmap("../h.png");
     if (!pixmap_read.isNull()) pixmap = pixmap_read;
 
-    // user icon
+
     pixmap_read = QPixmap("./h.png");
     if (!pixmap_read.isNull()) pixmap = pixmap_read;
 

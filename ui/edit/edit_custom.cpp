@@ -37,7 +37,7 @@ void EditCustom::onStart(std::shared_ptr<NekoGui::ProxyEntity> _ent) {
     this->ent = _ent;
     auto bean = this->ent->CustomBean();
 
-    // load known core
+
     auto core_map = QString2QJsonObject(NekoGui::dataStore->extraCore->core_map);
     for (const auto &key: core_map.keys()) {
         ui->core->addItem(key);
@@ -58,7 +58,7 @@ void EditCustom::onStart(std::shared_ptr<NekoGui::ProxyEntity> _ent) {
             "}");
     }
 
-    // load core ui
+
     P_LOAD_COMBO_STRING(core)
     ui->command->setText(bean->command.join(" "));
     ui->config_simple->setPlainText(bean->config_simple);
@@ -66,7 +66,7 @@ void EditCustom::onStart(std::shared_ptr<NekoGui::ProxyEntity> _ent) {
     P_LOAD_INT(mapping_port)
     P_LOAD_INT(socks_port)
 
-    // custom external
+
     if (!bean->core.isEmpty()) {
         ui->core->setDisabled(true);
     } else if (!preset_core.isEmpty()) {
@@ -77,7 +77,7 @@ void EditCustom::onStart(std::shared_ptr<NekoGui::ProxyEntity> _ent) {
         ui->config_simple->setPlainText(preset_config);
     }
 
-    // custom internal
+
     if (preset_core == "internal" || preset_core == "internal-full") {
         ui->core->hide();
         if (preset_core == "internal") {
@@ -89,9 +89,9 @@ void EditCustom::onStart(std::shared_ptr<NekoGui::ProxyEntity> _ent) {
         ui->w_ext2->hide();
     }
 
-    // Preview
+
     connect(ui->preview, &QPushButton::clicked, this, [=] {
-        // CustomBean::BuildExternal
+
         QStringList th;
         auto mapping_port = ui->mapping_port->text().toInt();
         auto socks_port = ui->socks_port->text().toInt();
@@ -100,15 +100,15 @@ void EditCustom::onStart(std::shared_ptr<NekoGui::ProxyEntity> _ent) {
         th << "%server_addr% => " + get_edit_text_serverAddress();
         th << "%server_port% => " + get_edit_text_serverPort();
         MessageBoxInfo(tr("Preview replace"), th.join("\n"));
-        // EditCustom::onEnd
+
         auto tmpEnt = NekoGui::ProfileManager::NewProxyEntity("custom");
         auto bean = tmpEnt->CustomBean();
         SAVE_CUSTOM_BEAN
-        // 补充
+
         bean->serverAddress = get_edit_text_serverAddress();
         bean->serverPort = get_edit_text_serverPort().toInt();
         if (bean->core.isEmpty()) return;
-        //
+
         auto result = NekoGui::BuildConfig(tmpEnt, false, false);
         if (!result->error.isEmpty()) {
             MessageBoxInfo(software_name, result->error);

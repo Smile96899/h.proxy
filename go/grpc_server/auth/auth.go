@@ -8,13 +8,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// Authenticator exposes a function for authenticating requests.
+
 type Authenticator struct {
 	Token string
 }
 
-// Authenticate checks that a token exists and is valid. It stores the user
-// metadata in the returned context and removes the token from the context.
+
+
 func (a Authenticator) Authenticate(ctx context.Context) (newCtx context.Context, err error) {
 	auth, err := extractHeader(ctx, "nekoray_auth")
 	if err != nil {

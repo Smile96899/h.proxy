@@ -21,10 +21,10 @@ DialogVPNSettings::DialogVPNSettings(QWidget *parent) : QDialog(parent), ui(new 
 #endif
     ui->strict_route->setChecked(NekoGui::dataStore->vpn_strict_route);
     ui->single_core->setChecked(NekoGui::dataStore->vpn_internal_tun);
-    //
+
     D_LOAD_STRING_PLAIN(vpn_rule_cidr)
     D_LOAD_STRING_PLAIN(vpn_rule_process)
-    //
+
     connect(ui->whitelist_mode, &QCheckBox::stateChanged, this, [=](int state) {
         if (state == Qt::Checked) {
             ui->gb_cidr->setTitle(tr("Proxy CIDR"));
@@ -42,7 +42,7 @@ DialogVPNSettings::~DialogVPNSettings() {
 }
 
 void DialogVPNSettings::accept() {
-    //
+
     auto mtu = ui->vpn_mtu->currentText().toInt();
     if (mtu > 10000 || mtu < 1000) mtu = 9000;
     NekoGui::dataStore->vpn_implementation = ui->vpn_implementation->currentIndex();
@@ -54,10 +54,10 @@ void DialogVPNSettings::accept() {
     NekoGui::dataStore->vpn_rule_white = ui->whitelist_mode->isChecked();
     bool isInternalChanged = NekoGui::dataStore->vpn_internal_tun != ui->single_core->isChecked();
     NekoGui::dataStore->vpn_internal_tun = ui->single_core->isChecked();
-    //
+
     D_SAVE_STRING_PLAIN(vpn_rule_cidr)
     D_SAVE_STRING_PLAIN(vpn_rule_process)
-    //
+
     QStringList msg{"UpdateDataStore"};
     if (isInternalChanged) {
         msg << "NeedRestart";

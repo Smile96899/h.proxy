@@ -35,11 +35,11 @@ void loadTranslate(const QString& locale) {
     if (trans_qt != nullptr) {
         trans_qt->deleteLater();
     }
-    //
+
     trans = new QTranslator;
     trans_qt = new QTranslator;
     QLocale::setDefault(QLocale(locale));
-    //
+
     if (trans->load(":/translations/" + locale + ".qm")) {
         QCoreApplication::installTranslator(trans);
     }
@@ -51,12 +51,12 @@ void loadTranslate(const QString& locale) {
 #define LOCAL_SERVER_PREFIX "h-localserver-"
 
 int main(int argc, char* argv[]) {
-    // Core dump
+
 #ifdef Q_OS_WIN
     Windows_SetCrashHandler();
 #endif
 
-    // pre-init QApplication
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0) && QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
 #endif
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     QApplication::setQuitOnLastWindowClosed(false);
     auto preQApp = new QApplication(argc, argv);
 
-    // Clean
+
     QDir::setCurrent(QApplication::applicationDirPath());
     if (QFile::exists("updater.old")) {
         QFile::remove("updater.old");
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
     }
 #endif
 
-    // Flags
+
     NekoGui::dataStore->argv = QApplication::arguments();
     if (NekoGui::dataStore->argv.contains("-many")) NekoGui::dataStore->flag_many = true;
     if (NekoGui::dataStore->argv.contains("-appdata")) {
@@ -92,13 +92,13 @@ int main(int argc, char* argv[]) {
     if (NekoGui::dataStore->argv.contains("-flag_restart_tun_on")) NekoGui::dataStore->flag_restart_tun_on = true;
     if (NekoGui::dataStore->argv.contains("-flag_reorder")) NekoGui::dataStore->flag_reorder = true;
 #ifdef NKR_CPP_USE_APPDATA
-    NekoGui::dataStore->flag_use_appdata = true; // Example: Package & MacOS
+    NekoGui::dataStore->flag_use_appdata = true;
 #endif
 #ifdef NKR_CPP_DEBUG
     NekoGui::dataStore->flag_debug = true;
 #endif
 
-    // dirs & clean
+
     auto wd = QDir(QApplication::applicationDirPath());
     if (wd.exists("installed.mode")) NekoGui::dataStore->flag_use_appdata = true;
     if (NekoGui::dataStore->flag_use_appdata) {
@@ -114,22 +114,22 @@ int main(int argc, char* argv[]) {
     QDir::setCurrent(wd.absoluteFilePath("config"));
     QDir("temp").removeRecursively();
 
-    // init QApplication
+
     delete preQApp;
     QApplication a(argc, argv);
 
-    // dispatchers
+
     DS_cores = new QThread;
     DS_cores->start();
 
-    // RunGuard
+
     RunGuard guard("h" + wd.absolutePath());
     quint64 guard_data_in = GetRandomUint64();
     quint64 guard_data_out = 0;
     if (!NekoGui::dataStore->flag_many && !guard.tryToRun(&guard_data_in)) {
-        // Some Good System
+
         if (guard.isAnotherRunning(&guard_data_out)) {
-            // Wake up a running instance
+
             QLocalSocket socket;
             socket.connectToServer(LOCAL_SERVER_PREFIX + Int2String(guard_data_out));
             qDebug() << socket.fullServerName();
@@ -140,13 +140,13 @@ int main(int argc, char* argv[]) {
             qDebug() << "connected to local server, try to raise another program";
             return 0;
         }
-        // Some Bad System
+
         QMessageBox::warning(nullptr, "h.", "Another h. instance is already running. Use -many to force start.");
         return 0;
     }
     MF_release_runguard = [&] { guard.release(); };
 
-// icons
+
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
     QIcon::setFallbackSearchPaths(QStringList{
         ":/neko",
@@ -154,12 +154,12 @@ int main(int argc, char* argv[]) {
     });
 #endif
 
-    // icon for no theme
+
     if (QIcon::themeName().isEmpty()) {
         QIcon::setThemeName("breeze");
     }
 
-    // Dir
+
     QDir dir;
     bool dir_success = true;
     if (!dir.exists("profiles")) {
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Load dataStore
+
     switch (NekoGui::coreType) {
         case NekoGui::CoreType::SING_BOX:
             NekoGui::dataStore->fn = "groups/h.json";
@@ -190,10 +190,10 @@ int main(int argc, char* argv[]) {
         NekoGui::dataStore->Save();
     }
 
-    // Datastore & Flags
+
     if (NekoGui::dataStore->start_minimal) NekoGui::dataStore->flag_tray = true;
 
-    // load routing
+
     NekoGui::dataStore->routing = std::make_unique<NekoGui::Routing>();
     NekoGui::dataStore->routing->fn = ROUTES_PREFIX + NekoGui::dataStore->active_routing;
     isLoaded = NekoGui::dataStore->routing->Load();
@@ -201,19 +201,19 @@ int main(int argc, char* argv[]) {
         NekoGui::dataStore->routing->Save();
     }
 
-    // Translate
+
     QString locale;
     switch (NekoGui::dataStore->language) {
-        case 1: // English
+        case 1:
             break;
         case 2:
             locale = "zh_CN";
             break;
         case 3:
-            locale = "fa_IR"; // farsi(iran)
+            locale = "fa_IR";
             break;
         case 4:
-            locale = "ru_RU"; // Russian
+            locale = "ru_RU";
             break;
         default:
             locale = QLocale().name();
@@ -221,11 +221,11 @@ int main(int argc, char* argv[]) {
     QGuiApplication::tr("QT_LAYOUT_DIRECTION");
     loadTranslate(locale);
 
-    // Signals
+
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
 
-    // QLocalServer
+
     QLocalServer server;
     auto server_name = LOCAL_SERVER_PREFIX + Int2String(guard_data_in);
     QLocalServer::removeServer(server_name);
@@ -234,7 +234,7 @@ int main(int argc, char* argv[]) {
         auto socket = server.nextPendingConnection();
         qDebug() << "nextPendingConnection:" << server_name << socket;
         socket->deleteLater();
-        // raise main window
+
         MW_dialog_message("", "Raise");
     });
 

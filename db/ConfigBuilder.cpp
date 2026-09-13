@@ -30,13 +30,13 @@ namespace NekoGui {
     }
 
     void MergeJson(QJsonObject &dst, const QJsonObject &src) {
-        // 合并
+
         if (src.isEmpty()) return;
         for (const auto &key: src.keys()) {
             auto v_src = src[key];
             if (dst.contains(key)) {
                 auto v_dst = dst[key];
-                if (v_src.isObject() && v_dst.isObject()) { // isObject 则合并？
+                if (v_src.isObject() && v_dst.isObject()) {
                     auto v_src_obj = v_src.toObject();
                     auto v_dst_obj = v_dst.toObject();
                     MergeJson(v_dst_obj, v_src_obj);
@@ -68,7 +68,7 @@ namespace NekoGui {
         }
     }
 
-    // Common
+
 
     std::shared_ptr<BuildConfigResult> BuildConfig(const std::shared_ptr<ProxyEntity> &ent, bool forTest, bool forExport) {
         auto result = std::make_shared<BuildConfigResult>();
@@ -85,7 +85,7 @@ namespace NekoGui {
             BuildConfigSingBox(status);
         }
 
-        // apply custom config
+
         MergeJson(result->coreConfig, QString2QJsonObject(ent->bean->custom_config));
 
         return result;
@@ -120,7 +120,7 @@ namespace NekoGui {
             return resolved;
         };
 
-        // Make list
+
         auto ents = resolveChain(status->ent);
         if (!status->result->error.isEmpty()) return {};
 
@@ -134,10 +134,10 @@ namespace NekoGui {
             if (!status->result->error.isEmpty()) return {};
         }
 
-        // BuildChain
+
         QString chainTagOut = BuildChainInternal(0, ents, status);
 
-        // Chain ent traffic stat
+
         if (ents.length() > 1) {
             status->ent->traffic_data->id = status->ent->id;
             status->ent->traffic_data->tag = chainTagOut.toStdString();
@@ -182,29 +182,29 @@ namespace NekoGui {
         int index = 0;
 
         for (const auto &ent: ents) {
-            // tagOut: v2ray outbound tag for a profile
-            // profile2 (in) (global)   tag g-(id)
-            // profile1                 tag (chainTag)-(id)
-            // profile0 (out)           tag (chainTag)-(id) / single: chainTag=g-(id)
+
+
+
+
             auto tagOut = chainTag + "-" + Int2String(ent->id);
 
-            // needGlobal: can only contain one?
+
             bool needGlobal = false;
 
-            // first profile set as global
+
             auto isFirstProfile = index == ents.length() - 1;
             if (isFirstProfile) {
                 needGlobal = true;
                 tagOut = "g-" + Int2String(ent->id);
             }
 
-            // last profile set as "proxy"
+
             if (chainId == 0 && index == 0) {
                 needGlobal = false;
                 tagOut = "proxy";
             }
 
-            // ignoreConnTag
+
             if (index != 0) {
                 status->result->ignoreConnTag << tagOut;
             }
@@ -217,7 +217,7 @@ namespace NekoGui {
             }
 
             if (index > 0) {
-                // chain rules: past
+
                 if (pastExternalStat == 0) {
                     auto replaced = status->outbounds.last().toObject();
                     replaced["detour"] = tagOut;
@@ -230,12 +230,12 @@ namespace NekoGui {
                     };
                 }
             } else {
-                // index == 0 means last profile in chain / not chain
+
                 chainTagOut = tagOut;
                 status->result->outboundStat = ent->traffic_data;
             }
 
-            // chain rules: this
+
             auto ext_mapping_port = 0;
             auto ext_socks_port = 0;
             auto thisExternalStat = ent->bean->NeedExternal(isFirstProfile);
@@ -244,7 +244,7 @@ namespace NekoGui {
                 return {};
             }
 
-            // determine port
+
             if (thisExternalStat > 0) {
                 if (ent->type == "custom") {
                     auto bean = ent->CustomBean();
@@ -265,7 +265,7 @@ namespace NekoGui {
             }
             if (thisExternalStat == 2) dataStore->need_keep_vpn_off = true;
             if (thisExternalStat == 1) {
-                // mapping
+
                 status->inbounds += QJsonObject{
                     {"type", "direct"},
                     {"tag", tagOut + "-mapping"},
@@ -274,7 +274,7 @@ namespace NekoGui {
                     {"override_address", ent->bean->serverAddress},
                     {"override_port", ent->bean->serverPort},
                 };
-                // no chain rule and not outbound, so need to set to direct
+
                 if (isFirstProfile) {
                     status->routingRules += QJsonObject{
                         {"inbound", QJsonArray{tagOut + "-mapping"}},
@@ -283,7 +283,7 @@ namespace NekoGui {
                 }
             }
 
-            // Outbound
+
 
             QJsonObject outbound;
             auto stream = GetStreamSettings(ent->bean.get());
@@ -294,14 +294,14 @@ namespace NekoGui {
                     status->result->error = QObject::tr("Core not found: %1").arg(ent->bean->DisplayCoreType());
                     return {};
                 }
-                if (!extR.error.isEmpty()) { // rejected
+                if (!extR.error.isEmpty()) {
                     status->result->error = extR.error;
                     return {};
                 }
                 extR.tag = ent->bean->DisplayType();
                 status->result->extRs.emplace_back(std::make_shared<NekoGui_fmt::ExternalBuildResult>(extR));
 
-                // SOCKS OUTBOUND
+
                 outbound["type"] = "socks";
                 outbound["server"] = "127.0.0.1";
                 outbound["server_port"] = ext_socks_port;
@@ -311,20 +311,20 @@ namespace NekoGui {
                     status->result->error = "unsupported outbound";
                     return {};
                 }
-                if (!coreR.error.isEmpty()) { // rejected
+                if (!coreR.error.isEmpty()) {
                     status->result->error = coreR.error;
                     return {};
                 }
                 outbound = coreR.outbound;
             }
 
-            // outbound misc
+
             outbound["tag"] = tagOut;
             ent->traffic_data->id = ent->id;
             ent->traffic_data->tag = tagOut.toStdString();
             status->result->outboundStats += ent->traffic_data;
 
-            // mux common
+
             auto needMux = ent->type == "vmess" || ent->type == "trojan" || ent->type == "vless";
             needMux &= dataStore->mux_concurrency > 0;
 
@@ -344,10 +344,10 @@ namespace NekoGui {
                 needMux = false;
             }
 
-            // common
-            // apply domain_strategy
+
+
             outbound["domain_strategy"] = dataStore->routing->outbound_domain_strategy;
-            // apply mux
+
             if (!muxApplied && needMux) {
                 auto muxObj = QJsonObject{
                     {"enabled", true},
@@ -359,10 +359,10 @@ namespace NekoGui {
                 muxApplied = true;
             }
 
-            // apply custom outbound settings
+
             MergeJson(outbound, QString2QJsonObject(ent->bean->custom_outbound));
 
-            // Bypass Lookup for the first profile
+
             auto serverAddress = ent->bean->serverAddress;
 
             auto customBean = dynamic_cast<NekoGui_fmt::CustomBean *>(ent->bean.get());
@@ -384,15 +384,15 @@ namespace NekoGui {
         return chainTagOut;
     }
 
-    // SingBox
+
 
     void BuildConfigSingBox(const std::shared_ptr<BuildConfigStatus> &status) {
-        // Log
+
         status->result->coreConfig["log"] = QJsonObject{{"level", dataStore->log_level}};
 
-        // Inbounds
 
-        // mixed-in
+
+
         if (IsValidPort(dataStore->inbound_socks_port) && !status->forTest) {
             QJsonObject inboundObj;
             inboundObj["tag"] = "mixed-in";
@@ -415,7 +415,7 @@ namespace NekoGui {
             status->inbounds += inboundObj;
         }
 
-        // tun-in
+
         if (dataStore->vpn_internal_tun && dataStore->spmode_vpn && !status->forTest) {
             QJsonObject inboundObj;
             inboundObj["tag"] = "tun-in";
@@ -436,11 +436,11 @@ namespace NekoGui {
             status->inbounds += inboundObj;
         }
 
-        // Outbounds
+
         auto tagProxy = BuildChain(0, status);
         if (!status->result->error.isEmpty()) return;
 
-        // direct & bypass & block
+
         status->outbounds += QJsonObject{
             {"type", "direct"},
             {"tag", "direct"},
@@ -460,25 +460,25 @@ namespace NekoGui {
             };
         }
 
-        // custom inbound
+
         if (!status->forTest) QJSONARRAY_ADD(status->inbounds, QString2QJsonObject(dataStore->custom_inbound)["inbounds"].toArray())
 
         status->result->coreConfig.insert("inbounds", status->inbounds);
         status->result->coreConfig.insert("outbounds", status->outbounds);
 
-        // user rule
+
         if (!status->forTest) {
             DOMAIN_USER_RULE
             IP_USER_RULE
         }
 
-        // sing-box common rule object
+
         auto make_rule = [&](const QStringList &list, bool isIP = false) {
             QJsonObject rule;
-            //
+
             QJsonArray ip_cidr;
             QJsonArray geoip;
-            //
+
             QJsonArray domain_keyword;
             QJsonArray domain_subdomain;
             QJsonArray domain_regexp;
@@ -492,7 +492,7 @@ namespace NekoGui {
                         ip_cidr += item;
                     }
                 } else {
-                    // https://www.v2fly.org/config/dns.html#dnsobject
+
                     if (item.startsWith("geosite:")) {
                         geosite += item.replace("geosite:", "");
                     } else if (item.startsWith("full:")) {
@@ -517,7 +517,7 @@ namespace NekoGui {
                     return rule;
                 }
                 rule["domain"] = domain_full;
-                rule["domain_suffix"] = domain_subdomain; // v2ray Subdomain => sing-box suffix
+                rule["domain_suffix"] = domain_subdomain;
                 rule["domain_keyword"] = domain_keyword;
                 rule["domain_regex"] = domain_regexp;
                 rule["geosite"] = geosite;
@@ -525,12 +525,12 @@ namespace NekoGui {
             return rule;
         };
 
-        // final add DNS
+
         QJsonObject dns;
         QJsonArray dnsServers;
         QJsonArray dnsRules;
 
-        // Remote
+
         if (!status->forTest)
             dnsServers += QJsonObject{
                 {"tag", "dns-remote"},
@@ -540,7 +540,7 @@ namespace NekoGui {
                 {"detour", tagProxy},
             };
 
-        // Direct
+
         QJsonObject directObj{
             {"tag", "dns-direct"},
             {"address_resolver", "dns-local"},
@@ -558,14 +558,14 @@ namespace NekoGui {
             {"server", "dns-direct"},
         });
 
-        // block
+
         if (!status->forTest)
             dnsServers += QJsonObject{
                 {"tag", "dns-block"},
                 {"address", "rcode://success"},
             };
 
-        // Fakedns
+
         if (dataStore->fake_dns && dataStore->vpn_internal_tun && dataStore->spmode_vpn && !status->forTest) {
             dnsServers += QJsonObject{
                 {"tag", "dns-fake"},
@@ -578,14 +578,14 @@ namespace NekoGui {
             };
         }
 
-        // Underlying 100% Working DNS ?
+
         dnsServers += QJsonObject{
             {"tag", "dns-local"},
             {"address", BOX_UNDERLYING_DNS},
             {"detour", "direct"},
         };
 
-        // sing-box dns rule object
+
         auto add_rule_dns = [&](const QStringList &list, const QString &server) {
             auto rule = make_rule(list, false);
             if (rule.isEmpty()) return;
@@ -595,7 +595,7 @@ namespace NekoGui {
         add_rule_dns(status->domainListDNSRemote, "dns-remote");
         add_rule_dns(status->domainListDNSDirect, "dns-direct");
 
-        // built-in rules
+
         if (!status->forTest) {
             dnsRules += QJsonObject{
                 {"query_type", QJsonArray{32, 33}},
@@ -607,7 +607,7 @@ namespace NekoGui {
             };
         }
 
-        // fakedns rule
+
         if (dataStore->fake_dns && dataStore->vpn_internal_tun && dataStore->spmode_vpn && !status->forTest) {
             dnsRules += QJsonObject{
                 {"inbound", "tun-in"},
@@ -624,9 +624,9 @@ namespace NekoGui {
         }
         status->result->coreConfig.insert("dns", dns);
 
-        // Routing
 
-        // dns hijack
+
+
         if (!status->forTest) {
             status->routingRules += QJsonObject{
                 {"protocol", "dns"},
@@ -634,7 +634,7 @@ namespace NekoGui {
             };
         }
 
-        // sing-box routing rule object
+
         auto add_rule_route = [&](const QStringList &list, bool isIP, const QString &out) {
             auto rule = make_rule(list, isIP);
             if (rule.isEmpty()) return;
@@ -642,7 +642,7 @@ namespace NekoGui {
             status->routingRules += rule;
         };
 
-        // final add user rule
+
         add_rule_route(status->domainListBlock, false, "block");
         add_rule_route(status->domainListRemote, false, tagProxy);
         add_rule_route(status->domainListDirect, false, "bypass");
@@ -650,7 +650,7 @@ namespace NekoGui {
         add_rule_route(status->ipListRemote, true, tagProxy);
         add_rule_route(status->ipListDirect, true, "bypass");
 
-        // built-in rules
+
         status->routingRules += QJsonObject{
             {"network", "udp"},
             {"port", QJsonArray{135, 137, 138, 139, 5353}},
@@ -665,7 +665,7 @@ namespace NekoGui {
             {"outbound", "block"},
         };
 
-        // tun user rule
+
         if (dataStore->vpn_internal_tun && dataStore->spmode_vpn && !status->forTest) {
             auto match_out = dataStore->vpn_rule_white ? "proxy" : "bypass";
 
@@ -693,20 +693,20 @@ namespace NekoGui {
             }
         }
 
-        // geopath
+
         auto geoip = FindCoreAsset("geoip.db");
         auto geosite = FindCoreAsset("geosite.db");
         if (geoip.isEmpty()) status->result->error = +"geoip.db not found";
         if (geosite.isEmpty()) status->result->error = +"geosite.db not found";
 
-        // final add routing rule
+
         auto routingRules = QString2QJsonObject(dataStore->routing->custom)["rules"].toArray();
         if (status->forTest) routingRules = {};
         if (!status->forTest) QJSONARRAY_ADD(routingRules, QString2QJsonObject(dataStore->custom_route_global)["rules"].toArray())
         QJSONARRAY_ADD(routingRules, status->routingRules)
         auto routeObj = QJsonObject{
             {"rules", routingRules},
-            {"auto_detect_interface", dataStore->spmode_vpn}, // TODO force enable?
+            {"auto_detect_interface", dataStore->spmode_vpn},
             {
                 "geoip",
                 QJsonObject{
@@ -727,7 +727,7 @@ namespace NekoGui {
         }
         status->result->coreConfig.insert("route", routeObj);
 
-        // experimental
+
         QJsonObject experimentalObj;
 
         if (!status->forTest && dataStore->core_box_clash_api > 0) {
@@ -743,7 +743,7 @@ namespace NekoGui {
     }
 
     QString WriteVPNSingBoxConfig() {
-        // tun user rule
+
         auto match_out = dataStore->vpn_rule_white ? "neko-socks" : "direct";
         auto no_match_out = dataStore->vpn_rule_white ? "direct" : "neko-socks";
 
@@ -763,15 +763,15 @@ namespace NekoGui {
             cidr_rule = "," + QJsonObject2QString(rule, false);
         }
 
-        // TODO bypass ext core process path?
 
-        // auth
+
+
         QString socks_user_pass;
         if (dataStore->inbound_auth->NeedAuth()) {
             socks_user_pass = R"( "username": "%1", "password": "%2", )";
             socks_user_pass = socks_user_pass.arg(dataStore->inbound_auth->username, dataStore->inbound_auth->password);
         }
-        // gen config
+
         auto configFn = ":/neko/vpn/sing-box-vpn.json";
         if (QFile::exists("vpn/sing-box-vpn.json")) configFn = "vpn/sing-box-vpn.json";
         auto config = ReadFileText(configFn)
@@ -787,7 +787,7 @@ namespace NekoGui {
                           .replace("%DNS_ADDRESS%", BOX_UNDERLYING_DNS)
                           .replace("%FAKE_DNS_INBOUND%", dataStore->fake_dns ? "tun-in" : "empty")
                           .replace("%PORT%", Int2String(dataStore->inbound_socks_port));
-        // write config
+
         QFile file;
         file.setFileName(QFileInfo(configFn).fileName());
         file.open(QIODevice::ReadWrite | QIODevice::Truncate);
@@ -800,13 +800,13 @@ namespace NekoGui {
 #ifdef Q_OS_WIN
         return {};
 #endif
-        // gen script
+
         auto scriptFn = ":/neko/vpn/vpn-run-root.sh";
         if (QFile::exists("vpn/vpn-run-root.sh")) scriptFn = "vpn/vpn-run-root.sh";
         auto script = ReadFileText(scriptFn)
                           .replace("./h_core", QApplication::applicationDirPath() + "/h_core")
                           .replace("$CONFIG_PATH", configPath);
-        // write script
+
         QFile file2;
         file2.setFileName(QFileInfo(scriptFn).fileName());
         file2.open(QIODevice::ReadWrite | QIODevice::Truncate);
@@ -815,4 +815,4 @@ namespace NekoGui {
         return QFileInfo(file2).absoluteFilePath();
     }
 
-} // namespace NekoGui
+}
