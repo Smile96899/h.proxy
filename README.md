@@ -1,17 +1,26 @@
-# h.proxy — Windows 桌面代理客户端
+# h.proxy for Windows · 代理客户端
+
+**Windows proxy client · 中文 / English**
 
 软件名称 **h.**，当前版本 **v1.0**。本仓库发布 **Windows x64** 版本，采用 C++ / Qt 界面和 Go 网络核心。
 
-## 下载与安装
+## 下载安装包直接使用 / Download and install — no build required
 
-- [下载 Windows 安装包](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)
-- [查看版本、安装包和校验文件](https://github.com/Smile96899/h.proxy/releases)
+- **[h.proxy for Windows — 下载安装包 / Download Windows x64 installer](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
+- [SHA256 校验文件 / SHA256 checksums](https://github.com/Smile96899/h.proxy/releases/latest/download/SHA256SUMS.txt)
+- [所有版本 / All releases](https://github.com/Smile96899/h.proxy/releases)
+
+**普通用户：下载安装 EXE 即可，不需要准备以下开发依赖，也不需要自己编译。**
+
+**For users: download and run the EXE installer. You do not need the development dependencies or build steps below.** Runtime dependencies are bundled. The installer is published separately under Releases, not stored with the source code. GitHub's “Source code” ZIP is not an installer.
 
 安装包在 **Releases** 中单独发布，不放进源码目录。下载源码 ZIP 不能直接安装软件。
 
 安装器默认安装到 `%LOCALAPPDATA%\Programs\h`。最后一页的“创建桌面快捷方式”默认不勾选，只有勾选并点击完成才创建。配置保存在 `%LOCALAPPDATA%\h\config`，升级不会用发布包覆盖个人配置；卸载保留配置。关闭主窗口 × 会退出主程序和核心。
 
 安装包未做商业代码签名，Windows 可能显示未知发布者。请核对 Releases 提供的 SHA256；不需要关闭安全软件。
+
+The default installation directory is `%LOCALAPPDATA%\Programs\h`; settings are stored in `%LOCALAPPDATA%\h\config`. The final-page desktop-shortcut checkbox is **unchecked by default**. A shortcut is created only when you select it and click Finish. Closing the main window exits the app and its core. Uninstalling preserves user settings. The installer is unsigned and Windows may show an unknown-publisher warning; verify the SHA256 and do not disable security software.
 
 ## 功能
 
@@ -22,24 +31,29 @@
 
 这是桌面客户端，不需要部署 Web 服务器、数据库、Node.js 或 Python 服务。历史源码仍包含其他平台文件，但本仓库当前安装包只面向 Windows x64，不承诺其他平台构建通过。
 
-## 从源码构建
+## 依赖、准备、编译与安装包构建 / Dependencies, preparation, build and packaging
 
-**完整步骤：[Windows 依赖准备、编译与 EXE 安装包构建](docs/Build_Windows.md)。**
+仅开发者需要 / For developers only:
 
-| 依赖 | 本版构建基线 / 用途 |
-| --- | --- |
-| Windows x64 | 建议 Windows 10/11；实际验证为本地 Windows 环境 |
-| Visual Studio 2022 Build Tools + Windows SDK | C++ 桌面开发、MSVC x64、CMake、Ninja |
-| Qt 6.7.2 MSVC x64 | Widgets、Network、Svg、LinguistTools、windeployqt |
-| Go 1.22.12 | 编译 `h_core.exe`、`updater.exe`；不要直接套用最新 Go |
-| Protobuf v21.4 | `protoc` 和静态库，界面与核心通信 |
-| yaml-cpp 0.7.0、ZXing 2.0.0 | 配置解析、二维码识别 |
-| QHotkey 子模块 | 全局快捷键，随 `git clone --recurse-submodules` 获取 |
-| libneko、sing-box、sing-quic | 按仓库固定提交获取，不能只下载主仓库 ZIP |
-| Inno Setup 6.5+ | 将完整运行目录制作成单个 EXE 安装包 |
-| OpenSSL 3 x64、VC143 CRT、D3D 运行库、Geo 数据库 | 运行依赖，打包时统一收集 |
+- **[中文完整教程](docs/Build_Windows.md)**
+- **[Complete English build guide](docs/Build_Windows.en.md)**
+
+| Dependency / 依赖 | Version / 版本 | Purpose / 用途 |
+| --- | --- | --- |
+| Windows | x64, Windows 10/11 | 构建与运行 / Build and run |
+| Visual Studio Build Tools + Windows SDK | 2022, MSVC x64 | C++ 桌面开发、CMake、Ninja / Desktop C++ toolchain |
+| Qt MSVC x64 | 6.7.2 | 界面与部署 / Widgets, Network, Svg, LinguistTools, windeployqt |
+| Go | 1.22.12 | 核心和更新器 / Build core and updater; avoid untested newer toolchains |
+| Protobuf | v21.4 | 通信代码 / protoc and static library |
+| yaml-cpp / ZXing | 0.7.0 / 2.0.0 | 配置解析与二维码 / Configuration parsing and QR decoding |
+| QHotkey | Git submodule | 全局快捷键 / Global hotkeys; clone recursively |
+| libneko / sing-box / sing-quic | Pinned commits / 固定提交 | 核心依赖 / Core source dependencies |
+| Inno Setup | 6.5+ within 6.x | 生成安装 EXE / Create the EXE installer |
+| OpenSSL / VC143 CRT / D3D / Geo databases | x64 runtime files | 随包提供的运行依赖 / Bundled runtime dependencies |
 
 准备好依赖后，流程为：**编译 C++ 界面 → 编译 Go 核心/更新器 → 收集运行依赖 → Inno Setup 生成安装包**。用户安装成品时不需要安装编译工具。
+
+After preparation: **build the C++ GUI → build the Go core/updater → collect runtime dependencies → compile the Inno Setup installer**. No web server, database, Node.js or Python service is required. This release targets Windows x64 only; other historical platform files are not a promise of supported builds.
 
 ## 目录
 
