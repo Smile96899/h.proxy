@@ -17,7 +17,6 @@
 - 节点与订阅分组管理、延迟测试、流量信息。
 - SOCKS / HTTP、Shadowsocks、VMess、VLESS、Trojan 等核心支持的代理配置。
 - 系统代理、TUN 模式、快捷键；TUN 可能需要管理员权限。
-- 中文界面、暖灰与青绿色主题、在线支持入口。
 
 无需部署 Web 服务器或数据库。当前发布仅面向 Windows x64，其他平台的历史源码不代表已获得构建支持。
 
@@ -60,4 +59,8 @@
 
 ---
 
-[作者：h.](https://t.me/hh_vpn_888) · 热爱 IT 技术，欢迎一起交流探索、学习进步。
+<p align="center">
+  <a href="https://t.me/hh_vpn_888"><strong>作者：h.</strong></a>
+  <br>
+  <sub>热爱技术，乐于分享。欢迎一起探索 IT，交流想法，共同成长。</sub>
+</p>

@@ -17,7 +17,6 @@ A Windows desktop proxy client with a C++ / Qt interface and a Go networking cor
 - Node and subscription group management, latency tests and traffic information.
 - SOCKS / HTTP, Shadowsocks, VMess, VLESS, Trojan and other proxy configurations supported by the core.
 - System proxy, TUN mode and hotkeys; TUN may require administrator privileges.
-- A Chinese application interface, warm-gray and teal theme, and an online support entry point.
 
 No web server or database deployment is required. The current release targets Windows x64 only; historical source files for other platforms do not imply supported builds.
 
@@ -60,4 +59,8 @@ The complete guide includes download sources, directory layout, pinned dependenc
 
 ---
 
-[Author: h.](https://t.me/hh_vpn_888) · Passionate about IT. Let's exchange ideas, explore technology, and learn together.
+<p align="center">
+  <a href="https://t.me/hh_vpn_888"><strong>Author: h.</strong></a>
+  <br>
+  <sub>A passion for technology. A spirit of sharing. Let's explore, exchange ideas, and grow together.</sub>
+</p>
