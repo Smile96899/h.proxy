@@ -2,16 +2,15 @@
 
 [中文](https://github.com/Smile96899/h.proxy/blob/main/README.md) | [English](https://github.com/Smile96899/h.proxy/blob/main/README.en.md)
 
-**h. v1.0** is a **Windows x64** desktop proxy client with a C++ / Qt interface and a Go networking core.
+A Windows desktop proxy client with a C++ / Qt interface and a Go networking core.
 
-## Download and install — no build required
+**App:** h. · **Version:** v1.0 · **Platform:** Windows x64
 
-- **[h.proxy for Windows — Download the installer](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
+## Download
 
+**[Download the h.proxy for Windows installer](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
 
-Creating a desktop shortcut is optional and unchecked by default. Upgrades and uninstalling preserve personal settings. Closing the main window exits the application and its core.
-
-This installer is unsigned, so Windows may show an “unknown publisher” warning. Download it only from this repository.
+> This installer is unsigned, so Windows may show an “unknown publisher” warning. Download it only from this repository.
 
 ## Features
 
@@ -20,11 +19,13 @@ This installer is unsigned, so Windows may show an “unknown publisher” warni
 - System proxy, TUN mode and hotkeys; TUN may require administrator privileges.
 - A Chinese application interface, warm-gray and teal theme, and an online support entry point.
 
-This is a desktop application: no web server, database, Node.js or Python service is required. Historical source files for other platforms remain, but the current installer targets Windows x64 only; other platform builds are not guaranteed.
+No web server or database deployment is required. The current release targets Windows x64 only; historical source files for other platforms do not imply supported builds.
 
-## Dependencies, preparation, compilation and installer packaging
+## Build from source
 
-For developers only: **[Read the complete English build guide](docs/Build_Windows.en.md)**.
+**[Read the English build guide: prepare dependencies → compile → create an installer](docs/Build_Windows.en.md)**
+
+### Dependencies
 
 | Dependency | Version | Purpose |
 | --- | --- | --- |
@@ -39,7 +40,12 @@ For developers only: **[Read the complete English build guide](docs/Build_Window
 | Inno Setup | 6.x, at least 6.5 | Create the EXE installer |
 | OpenSSL / VC143 CRT / D3D / Geo databases | x64 runtime files | Collected during packaging and bundled with the application |
 
-After preparation: **build the C++ GUI → build the Go core and updater → collect runtime dependencies → create the installer with Inno Setup**.
+### Build steps
+
+1. Prepare the dependencies and fetch the pinned source versions.
+2. Compile the C++ GUI and the Go core and updater.
+3. Collect runtime dependencies into a complete distribution directory.
+4. Create the EXE installer with Inno Setup.
 
 The complete guide includes download sources, directory layout, pinned dependencies, executable build commands, portable-versus-installed behavior and a pre-release checklist.
 
@@ -51,3 +57,7 @@ The complete guide includes download sources, directory layout, pinned dependenc
 - `libs/package_h.ps1`: create a portable ZIP.
 - `installer/h.iss`: Chinese installer and final-page shortcut option.
 - `h_version.txt`: displayed application version.
+
+---
+
+[Author: h.](https://t.me/hh_vpn_888) · Passionate about IT. Let's exchange ideas, explore technology, and learn together.

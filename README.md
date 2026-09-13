@@ -2,29 +2,30 @@
 
 [中文](https://github.com/Smile96899/h.proxy/blob/main/README.md) | [English](https://github.com/Smile96899/h.proxy/blob/main/README.en.md)
 
-软件名称 **h.**，当前版本 **v1.0**。面向 **Windows x64**，采用 C++ / Qt 界面和 Go 网络核心。
+一款面向 Windows 的桌面代理客户端，采用 C++ / Qt 界面和 Go 网络核心。
 
-## 下载安装包直接使用
+**软件名称：** h.　·　**版本：** v1.0　·　**平台：** Windows x64
 
-- **[h.proxy for Windows — 下载安装包](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
+## 下载使用
 
+**[下载 h.proxy for Windows 安装包](https://github.com/Smile96899/h.proxy/releases/latest/download/h-v1.0-setup.exe)**
 
-安装完成时可选择创建桌面快捷方式，默认不勾选。升级与卸载保留个人配置；点击主窗口 × 会退出程序。
+> 安装包尚未签名，Windows 可能提示“未知发布者”。请仅从本仓库下载。
 
-此安装包尚未签名，Windows 可能提示“未知发布者”。请仅从本仓库下载。
-
-## 功能
+## 主要功能
 
 - 节点与订阅分组管理、延迟测试、流量信息。
 - SOCKS / HTTP、Shadowsocks、VMess、VLESS、Trojan 等核心支持的代理配置。
 - 系统代理、TUN 模式、快捷键；TUN 可能需要管理员权限。
 - 中文界面、暖灰与青绿色主题、在线支持入口。
 
-这是桌面客户端，不需要部署 Web 服务器、数据库、Node.js 或 Python 服务。历史源码包含其他平台文件，但当前安装包只面向 Windows x64，不承诺其他平台构建通过。
+无需部署 Web 服务器或数据库。当前发布仅面向 Windows x64，其他平台的历史源码不代表已获得构建支持。
 
-## 依赖、准备、编译与安装包构建
+## 从源码构建
 
-仅开发者需要：**[阅读完整中文构建教程](docs/Build_Windows.md)**。
+**[阅读中文构建教程：准备依赖 → 编译 → 生成安装包](docs/Build_Windows.md)**
+
+### 依赖清单
 
 | 依赖 | 版本 | 用途 |
 | --- | --- | --- |
@@ -39,7 +40,12 @@
 | Inno Setup | 6.x，至少 6.5 | 生成 EXE 安装包 |
 | OpenSSL / VC143 CRT / D3D / Geo 数据库 | x64 运行文件 | 打包时统一收集，随程序提供 |
 
-准备好依赖后：**编译 C++ 界面 → 编译 Go 核心与更新器 → 收集运行依赖 → 使用 Inno Setup 生成安装包**。
+### 构建流程
+
+1. 准备上述依赖并获取固定版本源码。
+2. 编译 C++ 界面及 Go 核心、更新器。
+3. 收集运行依赖，生成完整发布目录。
+4. 使用 Inno Setup 制作 EXE 安装包。
 
 完整教程包含下载来源、目录结构、固定依赖版本、可执行构建命令、便携版与安装版区别，以及发布前检查项目。
 
@@ -51,3 +57,7 @@
 - `libs/package_h.ps1`：生成便携 ZIP。
 - `installer/h.iss`：中文安装器与最后一页快捷方式选项。
 - `h_version.txt`：软件显示版本。
+
+---
+
+[作者：h.](https://t.me/hh_vpn_888) · 热爱 IT 技术，欢迎一起交流探索、学习进步。
