@@ -2,9 +2,7 @@
 
 [中文](https://github.com/Smile96899/h.proxy/blob/main/README.md) | [English](https://github.com/Smile96899/h.proxy/blob/main/README.en.md)
 
-一款面向 Windows 的桌面代理客户端，采用 C++ / Qt 界面和 Go 网络核心。
-
-**软件名称：** h.　·　**版本：** v1.0　·　**平台：** Windows x64
+面向 Windows x64 的桌面代理客户端 · v1.0
 
 ## 下载使用
 
@@ -12,50 +10,16 @@
 
 > 安装包尚未签名，Windows 可能提示“未知发布者”。请仅从本仓库下载。
 
-## 主要功能
+## 原作与修改说明
 
-- 节点与订阅分组管理、延迟测试、流量信息。
-- SOCKS / HTTP、Shadowsocks、VMess、VLESS、Trojan 等核心支持的代理配置。
-- 系统代理、TUN 模式、快捷键；TUN 可能需要管理员权限。
+原作来自 **[MatsuriDayo/nekoray（NekoBox）](https://github.com/MatsuriDayo/nekoray)**。本项目在其基础上进行二次开发，主要修改包括：
 
-无需部署 Web 服务器或数据库。当前发布仅面向 Windows x64，其他平台的历史源码不代表已获得构建支持。
+- 更换软件名称、标志与工具栏图标，调整界面主题及中文文案。
+- 增加在线支持入口，精简版本弹窗，调整关闭窗口时的退出行为。
+- 补齐运行依赖与规则数据库，完善 Windows 便携版和 EXE 安装包。
+- 安装版配置独立存储，桌面快捷方式由用户在安装结束时选择创建。
 
-## 从源码构建
-
-**[阅读中文构建教程：准备依赖 → 编译 → 生成安装包](docs/Build_Windows.md)**
-
-### 依赖清单
-
-| 依赖 | 版本 | 用途 |
-| --- | --- | --- |
-| Windows | x64，Windows 10/11 | 构建与运行 |
-| Visual Studio Build Tools + Windows SDK | 2022，MSVC x64 | C++ 桌面开发、CMake、Ninja |
-| Qt MSVC x64 | 6.7.2 | 界面、网络、SVG、翻译与部署工具 |
-| Go | 1.22.12 | 编译核心和更新器，不建议直接改用未经验证的新版本 |
-| Protobuf | v21.4 | protoc 和通信静态库 |
-| yaml-cpp / ZXing | 0.7.0 / 2.0.0 | 配置解析与二维码识别 |
-| QHotkey | Git 子模块 | 全局快捷键，需要递归克隆 |
-| libneko / sing-box / sing-quic | 固定提交 | 核心依赖源码 |
-| Inno Setup | 6.x，至少 6.5 | 生成 EXE 安装包 |
-| OpenSSL / VC143 CRT / D3D / Geo 数据库 | x64 运行文件 | 打包时统一收集，随程序提供 |
-
-### 构建流程
-
-1. 准备上述依赖并获取固定版本源码。
-2. 编译 C++ 界面及 Go 核心、更新器。
-3. 收集运行依赖，生成完整发布目录。
-4. 使用 Inno Setup 制作 EXE 安装包。
-
-完整教程包含下载来源、目录结构、固定依赖版本、可执行构建命令、便携版与安装版区别，以及发布前检查项目。
-
-## 源码目录
-
-- `main/`、`ui/`、`db/`：桌面界面与配置逻辑。
-- `go/`：网络核心接口与更新器。
-- `libs/package_installer.ps1`：从独立依赖目录收集安装文件并生成 SHA256 清单。
-- `libs/package_h.ps1`：生成便携 ZIP。
-- `installer/h.iss`：中文安装器与最后一页快捷方式选项。
-- `h_version.txt`：软件显示版本。
+保留原项目 Git 历史与 [GPL-3.0 许可证](LICENSE)，第三方组件遵循各自的许可证。
 
 ---
 
