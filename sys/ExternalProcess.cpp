@@ -78,14 +78,14 @@ namespace NekoGui_sys {
         connect(this, &QProcess::readyReadStandardOutput, this, [&]() {
             auto log = readAllStandardOutput();
             if (!NekoGui::dataStore->core_running) {
-                if (log.contains("grpc server listening")) {
+                if (log.contains("gRPC 服务监听于")) {
                     // The core really started
                     NekoGui::dataStore->core_running = true;
                     if (start_profile_when_core_is_up >= 0) {
                         MW_dialog_message("ExternalProcess", "CoreStarted," + Int2String(start_profile_when_core_is_up));
                         start_profile_when_core_is_up = -1;
                     }
-                } else if (log.contains("failed to serve")) {
+                } else if (log.contains("服务启动失败")) {
                     // The core failed to start
                     QProcess::kill();
                 }

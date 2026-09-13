@@ -19,7 +19,7 @@ pre_start_linux() {
 
 start() {
   pre_start_linux
-  "./nekobox_core" run -c "$CONFIG_PATH"
+  "./h_core" run -c "$CONFIG_PATH"
 }
 
 stop() {

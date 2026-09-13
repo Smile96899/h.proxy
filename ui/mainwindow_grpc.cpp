@@ -239,7 +239,7 @@ void MainWindow::speedtest_current_group(int mode, bool test_group) {
         lock_return.lock();
         lock_return.unlock();
         speedtesting = false;
-        MW_show_log(QObject::tr("Speedtest finished."));
+        MW_show_log(QStringLiteral("测速流程已结束，请查看节点列表中的测试结果；失败原因显示在对应行。"));
     });
 #endif
 }

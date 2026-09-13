@@ -304,7 +304,7 @@ void DialogBasicSettings::refresh_auth() {
 
 void DialogBasicSettings::on_set_custom_icon_clicked() {
     auto title = ui->set_custom_icon->text();
-    QString user_icon_path = "./" + software_name.toLower() + ".png";
+    QString user_icon_path = "./h.png";
     auto c = QMessageBox::question(this, title, tr("Please select a PNG file."),
                                    tr("Select"), tr("Reset"), tr("Cancel"), 2, 2);
     if (c == 0) {

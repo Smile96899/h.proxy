@@ -303,7 +303,7 @@ namespace NekoGui {
         if (isDefault) {
             QString version = SubStrBefore(NKR_VERSION, "-");
             if (!version.contains(".")) version = "2.0";
-            return "NekoBox/PC/" + version + " (Prefer ClashMeta Format)";
+            return "h./PC/" + version + " (Prefer ClashMeta Format)";
         }
         return user_agent;
     }
@@ -433,7 +433,7 @@ namespace NekoGui {
     }
 
     QString FindNekoBoxCoreRealPath() {
-        auto fn = QApplication::applicationDirPath() + "/nekobox_core";
+        auto fn = QApplication::applicationDirPath() + "/h_core";
         auto fi = QFileInfo(fn);
         if (fi.isSymLink()) return fi.symLinkTarget();
         return fn;

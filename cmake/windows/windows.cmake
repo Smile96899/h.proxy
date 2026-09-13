@@ -4,12 +4,16 @@ set(PLATFORM_LIBRARIES wininet wsock32 ws2_32 user32 rasapi32 iphlpapi)
 include(cmake/windows/generate_product_version.cmake)
 generate_product_version(
         QV2RAY_RC
-        ICON "${CMAKE_SOURCE_DIR}/res/nekobox.ico"
-        NAME "nekobox"
-        BUNDLE "nekobox"
-        COMPANY_NAME "nekobox"
-        COMPANY_COPYRIGHT "nekobox"
-        FILE_DESCRIPTION "nekobox"
+        ICON "${CMAKE_SOURCE_DIR}/res/h.ico"
+        NAME "h"
+        BUNDLE "h"
+        VERSION_MAJOR 1
+        VERSION_MINOR 0
+        VERSION_PATCH 0
+        VERSION_REVISION 0
+        COMPANY_NAME "h."
+        COMPANY_COPYRIGHT ""
+        FILE_DESCRIPTION "h. Desktop Proxy Client"
 )
 add_definitions(-DUNICODE -D_UNICODE -DNOMINMAX)
 set(GUI_TYPE WIN32)

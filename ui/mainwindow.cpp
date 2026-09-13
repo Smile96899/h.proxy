@@ -64,6 +64,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Setup misc UI
     themeManager->ApplyTheme(NekoGui::dataStore->theme);
     ui->setupUi(this);
+    ui->toolButton_program->setIcon(QIcon(":/icon/h-dashboard.svg"));
+    ui->toolButton_preferences->setIcon(QIcon(":/icon/h-settings.svg"));
+    ui->toolButton_server->setIcon(QIcon(":/icon/h-nodes.svg"));
+    ui->toolButton_ads->setIcon(QIcon(":/icon/h-support.svg"));
+    ui->toolButton_update->setIcon(QIcon(":/icon/h-version.svg"));
+    ui->toolButton_ads->setText(QStringLiteral("在线支持"));
     //
     connect(ui->menu_start, &QAction::triggered, this, [=]() { neko_start(); });
     connect(ui->menu_stop, &QAction::triggered, this, [=]() { neko_stop(); });
@@ -100,9 +106,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->toolButton_preferences->setMenu(ui->menu_preferences);
     ui->toolButton_server->setMenu(ui->menu_server);
     ui->menubar->setVisible(false);
-    connect(ui->toolButton_document, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://matsuridayo.github.io/")); });
-    connect(ui->toolButton_ads, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://neko-box.pages.dev/喵")); });
-    connect(ui->toolButton_update, &QToolButton::clicked, this, [=] { runOnNewThread([=] { CheckUpdate(); }); });
+    connect(ui->toolButton_ads, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl(website_url)); });
+    connect(ui->toolButton_update, &QToolButton::clicked, this, [=] {
+        QMessageBox dialog(this);
+        dialog.setWindowTitle(QStringLiteral("h."));
+        dialog.setTextFormat(Qt::PlainText);
+        dialog.setTextInteractionFlags(Qt::NoTextInteraction);
+        dialog.setText(QStringLiteral("h. %1").arg(QStringLiteral(NKR_VERSION)));
+        dialog.setStandardButtons(QMessageBox::Ok);
+        dialog.setButtonText(QMessageBox::Ok, QStringLiteral("确定"));
+        dialog.exec();
+    });
     connect(ui->toolButton_url_test, &QToolButton::clicked, this, [=] { speedtest_current_group(1, true); });
 
     // Setup log UI
@@ -378,7 +392,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             name = ent->bean->DisplayCoreType();
         }
         ui->menu_export_config->setVisible(name == software_core_name);
-        ui->menu_export_config->setText(tr("Export %1 config").arg(name));
+        ui->menu_export_config->setText(QStringLiteral("导出 %1 配置").arg(name));
     });
     refresh_status();
 
@@ -388,7 +402,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     if (NekoGui::dataStore->core_port <= 0) NekoGui::dataStore->core_port = 19810;
 
     auto core_path = QApplication::applicationDirPath() + "/";
-    core_path += "nekobox_core";
+    core_path += "h_core";
 
     QStringList args;
     args.push_back("nekobox");
@@ -442,10 +456,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if (tray->isVisible()) {
-        hide();          // 隐藏窗口
-        event->ignore(); // 忽略事件
-    }
+    // Use the normal asynchronous shutdown path to stop the core and restore proxy settings.
+    event->ignore();
+    if (!NekoGui::dataStore->prepare_exit) on_menu_exit_triggered();
 }
 
 MainWindow::~MainWindow() {
@@ -654,6 +667,7 @@ void MainWindow::on_menu_exit_triggered() {
         neko_set_spmode_system_proxy(false, false);
         neko_set_spmode_vpn(false, false);
         if (NekoGui::dataStore->spmode_vpn) {
+            NekoGui::dataStore->prepare_exit = false;
             mu_exit.unlock(); // retry
             return;
         }
@@ -759,7 +773,7 @@ void MainWindow::neko_set_spmode_vpn(bool enable, bool save) {
                     }
 #endif
 #ifdef Q_OS_WIN
-                    auto n = QMessageBox::warning(GetMessageBoxParent(), software_name, tr("Please run NekoBox as admin"), QMessageBox::Yes | QMessageBox::No);
+                    auto n = QMessageBox::warning(GetMessageBoxParent(), software_name, tr("Please run h. as administrator"), QMessageBox::Yes | QMessageBox::No);
                     if (n == QMessageBox::Yes) {
                         this->exit_reason = 3;
                         on_menu_exit_triggered();
@@ -804,7 +818,7 @@ void MainWindow::neko_set_spmode_vpn(bool enable, bool save) {
 void MainWindow::refresh_status(const QString &traffic_update) {
     auto refresh_speed_label = [=] {
         if (traffic_update_cache == "") {
-            ui->label_speed->setText(QObject::tr("Proxy: %1\nDirect: %2").arg("", ""));
+            ui->label_speed->setText(QStringLiteral("代理：%1\n直连：%2").arg("", ""));
         } else {
             ui->label_speed->setText(traffic_update_cache);
         }
@@ -837,28 +851,28 @@ void MainWindow::refresh_status(const QString &traffic_update) {
     }
     //
     auto display_socks = DisplayAddress(NekoGui::dataStore->inbound_address, NekoGui::dataStore->inbound_socks_port);
-    auto inbound_txt = QStringLiteral("Mixed: %1").arg(display_socks);
+    auto inbound_txt = QStringLiteral("混合端口：%1").arg(display_socks);
     ui->label_inbound->setText(inbound_txt);
     //
     ui->checkBox_VPN->setChecked(NekoGui::dataStore->spmode_vpn);
     ui->checkBox_SystemProxy->setChecked(NekoGui::dataStore->spmode_system_proxy);
     if (select_mode) {
-        ui->label_running->setText(tr("Select") + " *");
-        ui->label_running->setToolTip(tr("Select mode, double-click or press Enter to select a profile, press ESC to exit."));
+        ui->label_running->setText(QStringLiteral("选择") + " *");
+        ui->label_running->setToolTip(QStringLiteral("选择模式：双击或按回车选择节点，按 ESC 退出。"));
     } else {
         ui->label_running->setToolTip({});
     }
 
     auto make_title = [=](bool isTray) {
+        if (!isTray) return software_name;
+
         QStringList tt;
-        if (!isTray && NekoGui::IsAdmin()) tt << "[Admin]";
         if (select_mode) tt << "[" + tr("Select") + "]";
         if (!title_error.isEmpty()) tt << "[" + title_error + "]";
         if (NekoGui::dataStore->spmode_vpn && !NekoGui::dataStore->spmode_system_proxy) tt << "[Tun]";
         if (!NekoGui::dataStore->spmode_vpn && NekoGui::dataStore->spmode_system_proxy) tt << "[" + tr("System Proxy") + "]";
         if (NekoGui::dataStore->spmode_vpn && NekoGui::dataStore->spmode_system_proxy) tt << "[Tun+" + tr("System Proxy") + "]";
         tt << software_name;
-        if (!isTray) tt << "(" + QString(NKR_VERSION) + ")";
         if (!NekoGui::dataStore->active_routing.isEmpty() && NekoGui::dataStore->active_routing != "Default") {
             tt << "[" + NekoGui::dataStore->active_routing + "]";
         }
@@ -1290,7 +1304,7 @@ void MainWindow::display_qr_link(bool nkrFormat) {
             l->setScaledContents(true);
             layout()->addWidget(l);
             cb = new QCheckBox;
-            cb->setText("Neko Links");
+            cb->setText("h. 链接");
             layout()->addWidget(cb);
             l2 = new QPlainTextEdit();
             l2->setReadOnly(true);
@@ -1544,7 +1558,7 @@ void MainWindow::on_masterLogBrowser_customContextMenuRequested(const QPoint &po
     menu->addAction(sep);
 
     auto action_add_ignore = new QAction(this);
-    action_add_ignore->setText(tr("Set ignore keyword"));
+    action_add_ignore->setText(QStringLiteral("设置忽略关键词"));
     connect(action_add_ignore, &QAction::triggered, this, [=] {
         auto list = NekoGui::dataStore->log_ignore;
         auto newStr = ui->masterLogBrowser->textCursor().selectedText().trimmed();
@@ -1559,7 +1573,7 @@ void MainWindow::on_masterLogBrowser_customContextMenuRequested(const QPoint &po
     menu->addAction(action_add_ignore);
 
     auto action_add_route = new QAction(this);
-    action_add_route->setText(tr("Save as route"));
+    action_add_route->setText(QStringLiteral("保存为路由"));
     connect(action_add_route, &QAction::triggered, this, [=] {
         auto newStr = ui->masterLogBrowser->textCursor().selectedText().trimmed();
         if (newStr.isEmpty()) return;
@@ -1604,7 +1618,7 @@ void MainWindow::on_masterLogBrowser_customContextMenuRequested(const QPoint &po
     menu->addAction(action_add_route);
 
     auto action_clear = new QAction(this);
-    action_clear->setText(tr("Clear"));
+    action_clear->setText(QStringLiteral("清空"));
     connect(action_clear, &QAction::triggered, this, [=] {
         qvLogDocument->clear();
         ui->masterLogBrowser->clear();
@@ -1781,7 +1795,7 @@ bool MainWindow::StartVPNProcess() {
 #ifdef Q_OS_WIN
     runOnNewThread([=] {
         vpn_pid = 1; // TODO get pid?
-        WinCommander::runProcessElevated(QApplication::applicationDirPath() + "/nekobox_core.exe",
+        WinCommander::runProcessElevated(QApplication::applicationDirPath() + "/h_core.exe",
                                          {"--disable-color", "run", "-c", configPath}, "",
                                          NekoGui::dataStore->vpn_hide_console ? WinCommander::SW_HIDE : WinCommander::SW_SHOWMINIMIZED); // blocking
         vpn_pid = 0;
@@ -1816,7 +1830,7 @@ bool MainWindow::StopVPNProcess(bool unconditional) {
         bool ok;
         core_process->processId();
 #ifdef Q_OS_WIN
-        auto ret = WinCommander::runProcessElevated("taskkill", {"/IM", "nekobox_core.exe",
+        auto ret = WinCommander::runProcessElevated("taskkill", {"/IM", "h_core.exe",
                                                                  "/FI",
                                                                  "PID ne " + Int2String(core_process->processId())});
         ok = ret == 0;
@@ -1824,10 +1838,10 @@ bool MainWindow::StopVPNProcess(bool unconditional) {
         QProcess p;
 #ifdef Q_OS_MACOS
         p.start("osascript", {"-e", QStringLiteral("do shell script \"%1\" with administrator privileges")
-                                        .arg("pkill -2 -U 0 nekobox_core")});
+                                        .arg("pkill -2 -U 0 h_core")});
 #else
         if (unconditional) {
-            p.start("pkexec", {"killall", "-2", "nekobox_core"});
+            p.start("pkexec", {"killall", "-2", "h_core"});
         } else {
             p.start("pkexec", {"pkill", "-2", "-P", Int2String(vpn_pid)});
         }

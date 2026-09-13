@@ -48,7 +48,7 @@ void loadTranslate(const QString& locale) {
     }
 }
 
-#define LOCAL_SERVER_PREFIX "nekoraylocalserver-"
+#define LOCAL_SERVER_PREFIX "h-localserver-"
 
 int main(int argc, char* argv[]) {
     // Core dump
@@ -100,8 +100,9 @@ int main(int argc, char* argv[]) {
 
     // dirs & clean
     auto wd = QDir(QApplication::applicationDirPath());
+    if (wd.exists("installed.mode")) NekoGui::dataStore->flag_use_appdata = true;
     if (NekoGui::dataStore->flag_use_appdata) {
-        QApplication::setApplicationName("nekoray");
+        QApplication::setApplicationName("h");
         if (!NekoGui::dataStore->appdataDir.isEmpty()) {
             wd.setPath(NekoGui::dataStore->appdataDir);
         } else {
@@ -122,7 +123,7 @@ int main(int argc, char* argv[]) {
     DS_cores->start();
 
     // RunGuard
-    RunGuard guard("nekoray" + wd.absolutePath());
+    RunGuard guard("h" + wd.absolutePath());
     quint64 guard_data_in = GetRandomUint64();
     quint64 guard_data_out = 0;
     if (!NekoGui::dataStore->flag_many && !guard.tryToRun(&guard_data_in)) {
@@ -140,7 +141,7 @@ int main(int argc, char* argv[]) {
             return 0;
         }
         // Some Bad System
-        QMessageBox::warning(nullptr, "NekoGui", "RunGuard disallow to run, use -many to force start.");
+        QMessageBox::warning(nullptr, "h.", "Another h. instance is already running. Use -many to force start.");
         return 0;
     }
     MF_release_runguard = [&] { guard.release(); };
@@ -178,7 +179,7 @@ int main(int argc, char* argv[]) {
     // Load dataStore
     switch (NekoGui::coreType) {
         case NekoGui::CoreType::SING_BOX:
-            NekoGui::dataStore->fn = "groups/nekobox.json";
+            NekoGui::dataStore->fn = "groups/h.json";
             break;
         default:
             MessageBoxWarning("Error", "Unknown coreType.");

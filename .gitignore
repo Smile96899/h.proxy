@@ -85,3 +85,13 @@ CMakeLists.txt.user*
 
 .vs
 out
+
+# Local build outputs, runtime state and credentials
+*.log
+/libs/deps/
+/config/
+/h-build-deps/
+*.pfx
+*.p12
+.env
+.env.*

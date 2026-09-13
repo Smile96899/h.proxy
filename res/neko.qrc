@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
+        <file>icon/h-dashboard.svg</file>
+        <file>icon/h-settings.svg</file>
+        <file>icon/h-nodes.svg</file>
+        <file>icon/h-support.svg</file>
+        <file>icon/h-version.svg</file>
         <file alias="icon/b-internet-web-browser.svg">icon/internet-web-browser.svg</file>
         <file alias="icon/b-system-run.svg">icon/system-run.svg</file>
         <file alias="icon/b-preferences.svg">icon/preferences.svg</file>
@@ -15,8 +20,8 @@
         <file>icon/material/swap-horizontal.svg</file>
     </qresource>
     <qresource prefix="/neko">
-        <file alias="nekobox.png">public/nekobox.png</file>
-        <file>neko.css</file>
+        <file alias="h.png">public/h-logo.png</file>
+        <file>h-stone.css</file>
         <file>vpn/vpn-run-root.sh</file>
         <file>vpn/sing-box-vpn.json</file>
         <file>dashboard-notice.html</file>

@@ -21,7 +21,8 @@ pushd go/cmd/updater
 [ "$GOOS" == "linux" ] && mv $DEST/updater $DEST/launcher || true
 popd
 
-#### Go: nekobox_core ####
+#### Go: h_core ####
 pushd go/cmd/nekobox_core
-go build -v -o $DEST -trimpath -ldflags "-w -s -X github.com/matsuridayo/libneko/neko_common.Version_neko=$version_standalone" -tags "with_clash_api,with_gvisor,with_quic,with_wireguard,with_utls,with_ech"
+[ "$GOOS" == "windows" ] && CORE_NAME=h_core.exe || CORE_NAME=h_core
+go build -v -o "$DEST/$CORE_NAME" -trimpath -ldflags "-w -s -X github.com/matsuridayo/libneko/neko_common.Version_neko=$version_standalone" -tags "with_clash_api,with_gvisor,with_quic,with_wireguard,with_utls,with_ech"
 popd

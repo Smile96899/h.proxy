@@ -31,7 +31,7 @@
         </sizepolicy>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(251, 114, 153);</string>
+        <string notr="true">color: #376D65;</string>
        </property>
        <property name="text">
         <string notr="true">Type</string>

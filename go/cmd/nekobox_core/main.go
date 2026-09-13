@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	fmt.Println("sing-box:", constant.Version, "NekoBox:", neko_common.Version_neko)
+	fmt.Println("sing-box 内核：", constant.Version, "h. 版本：", neko_common.Version_neko)
 	fmt.Println()
 
 	// nekobox_core

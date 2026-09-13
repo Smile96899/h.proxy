@@ -94,10 +94,10 @@ func RunCore(setupCore func(), server gen.LibcoreServiceServer) {
 	)
 	gen.RegisterLibcoreServiceServer(s, server)
 
-	name := "nekobox_core"
+	name := "h. 核心"
 
-	log.Printf("%s grpc server listening at %v\n", name, lis.Addr())
+	log.Printf("%s gRPC 服务监听于 %v\n", name, lis.Addr())
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Fatalf("服务启动失败：%v", err)
 	}
 }

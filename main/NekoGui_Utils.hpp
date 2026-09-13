@@ -8,7 +8,9 @@
 
 //
 
-inline QString software_name = "NekoBox";
+inline QString software_name = "h.";
+// 顶部“在线支持”按钮的跳转地址，只需修改这里。
+inline QString website_url = "https://t.me/hh_vpn_888";
 inline QString software_core_name = "sing-box";
 
 // Main Functions
